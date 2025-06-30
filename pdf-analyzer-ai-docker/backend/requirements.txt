@@ -1,0 +1,9 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+PyPDF2==3.0.1
+python-multipart==0.0.9
+
+
+ollama==0.1.6        # client Python officiel
+python-dotenv==1.0.1 # facultatif : variables d’environnement
+requests==2.32.3
