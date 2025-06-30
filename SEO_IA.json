@@ -1,0 +1,1458 @@
+{
+  "name": "SEO IA Main Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "options": {}
+      },
+      "id": "1e030349-fadd-4041-bf3c-80caab2348ce",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        120,
+        640
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "43908774-8573-4c89-aff8-87d348f26c5e",
+      "name": "Loop",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -100,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "SEO IA",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0"
+        },
+        "table": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "Articles",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0/tblyxNbFUQUDbxEez"
+        },
+        "options": {}
+      },
+      "id": "56efa213-2411-4e35-b4b4-4153e51cd726",
+      "name": "GetSiteInternet",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -300,
+        640
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "SEO IA",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0"
+        },
+        "table": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0/tblyxNbFUQUDbxEez"
+        },
+        "filterByFormula": "=",
+        "options": {}
+      },
+      "id": "53e2cc04-4563-46af-97a7-cbb438bf104d",
+      "name": "GetArticles",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        100,
+        820
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "4a96b285-7b2d-438a-b8b8-40b07ce0d57b",
+              "leftValue": "={{ $json.Site_internet }}",
+              "rightValue": "={{ $('Loop').item.json.id }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "890f7664-8935-4b8e-a3f8-c7b0f1fa347e",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.1,
+      "position": [
+        300,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "link",
+              "field2": "Url_article"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "12a85157-30b5-4a76-948b-13c5e148791e",
+      "name": "Compare Datasets",
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        300,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "SEO IA",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0"
+        },
+        "table": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "Stockage Article (into RAG)",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0/tblUDCHkO4baxnc1b"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Titre": "={{ $('Wordpress').item.json.yoast_head_json.og_title }}",
+            "Contenu Article": "={{ $('Wordpress').item.json.content.rendered }}",
+            "ID": "={{ $('Wordpress').item.json.id }}",
+            "Cat\u00e9gorie": "={{ $('Wordpress').item.json.categories.join(', ') }}",
+            "Status": "=",
+            "Derni\u00e8re Modification": "={{ new Date($('Wordpress').item.json.modified).toISOString() }}",
+            "Texte \u00e0 Vectoriser": "=",
+            "URL Article": "={{ $('Wordpress').item.json.link }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Titre",
+              "displayName": "Titre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contenu Article",
+              "displayName": "Contenu Article",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "URL Article",
+              "displayName": "URL Article",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Cat\u00e9gorie",
+              "displayName": "Cat\u00e9gorie",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Derni\u00e8re Modification",
+              "displayName": "Derni\u00e8re Modification",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Texte \u00e0 Vectoriser",
+              "displayName": "Texte \u00e0 Vectoriser",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a0ec7d5b-ea3b-48c3-bb55-a6b502311325",
+      "name": "Store Article Data",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        500,
+        880
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsCode": "// Traiter les donn\u00e9es re\u00e7ues dans le JSON\nreturn $input.all().map(item => {\n  const fields = item.json.fields;\n\n  // Structure pour Qdrant\n  return {\n    id: fields[\"ID\"], // Utilise l'ID unique de l'article\n    payload: {\n      title: fields[\"Titre\"] || \"\", // Titre de l'article\n      content: fields[\"Contenu Article\"] || \"\", // Contenu complet\n      url: fields[\"URL Article\"] || \"\", // URL vers l'article\n      category: fields[\"Cat\u00e9gorie\"] || \"\", // Cat\u00e9gorie (ID ou nom)\n      date_modified: fields[\"Derni\u00e8re Modification\"] || \"\", // Derni\u00e8re modification\n      created_time: item.json.createdTime || \"\" // Date de cr\u00e9ation dans Airtable\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        700
+      ],
+      "id": "e90a0c3b-ca6a-4b43-9f7b-c45d2e8d48d6",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        860
+      ],
+      "id": "f74cc36f-b6b2-4e2f-9f2a-4cadf5f83625",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "content": "## R\u00e9cup\u00e9rer les Articles Existants\n",
+        "height": 560,
+        "width": 1040
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        580
+      ],
+      "id": "b7db2b7d-b15d-470f-bc96-29e1e6008fb3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Ajouter les Articles Existants \u00e0 Supabase\n",
+        "height": 560,
+        "width": 700,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        700,
+        580
+      ],
+      "id": "3872eb81-fa29-4206-9c90-1bafc10bcce5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "SEO IA",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0"
+        },
+        "table": {
+          "__rl": true,
+          "value": "REDACTED",
+          "mode": "list",
+          "cachedResultName": "Articles G\u00e9n\u00e9r\u00e9s par IA",
+          "cachedResultUrl": "https://airtable.com/appc9zowhIwnYF2h0/tblruopfLhnH7nbwQ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Target Keyword": "={{ $json.config.targetKeyword }}",
+            "Output": "={{ $json.config.outline[0].output }}",
+            "HTML Output": "={{ $json.output.polishedHtml }}",
+            "Titre": "={{ $json.config.title }}",
+            "Article finis/ non finis": "={{ $json.statusDetail }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Target Keyword",
+              "displayName": "Target Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output",
+              "displayName": "Output",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "HTML Output",
+              "displayName": "HTML Output",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Titre",
+              "displayName": "Titre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Article finis/ non finis",
+              "displayName": "Article finis/ non finis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1860,
+        1300
+      ],
+      "id": "726b1cab-dd26-4f4e-880d-826315b2afe0",
+      "name": "Airtable",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://koala.sh/api/articles/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"targetKeyword\": \"{{ $json.output.synthese_concurrentielle.principaux_mots_cles }}\",\n  \"gptVersion\": \"gpt-4o-mini\",\n  \"articleType\": \"blog_post\",\n  \"autoPolish\": true,\n  \"polishSettings\": {\n    \"split-up-long-paragraphs\": true,\n    \"remove-mid-article-conclusions\": true,\n    \"remove-repetitive-sentences\": true,\n    \"convert-passive-voice\": false,\n    \"simplify-complex-sentences\": false\n  },\n  \"language\": \"French\",\n  \"toneOfVoiceProfile\": \"seo_optimized\",\n  \"includeFaq\": true,\n  \"readabilityMode\": \"default\",\n  \"realTimeData\": true,\n  \"shouldCiteSources\": true,\n  \"seoOptimizationLevel\": \"ai_powered\",\n  \"includeKeyTakeaways\": false,\n  \"disableIntroduction\": false,\n  \"disableConclusion\": false,\n  \"multimediaOption\": \"images\",\n  \"imageStyle\": \"photo\",\n  \"maxImages\": 5,\n  \"extraEntitiesPrompt\": \"{{ $json.output.recommandations.idees_mots_cles_supplementaires.join(', ') }}\",\n  \"outline\": \"{{ $json.output.synthese_concurrentielle.structure_plan_frequent }}\",\n  \"extraIntroductionPrompt\": \"{{ $json.output.synthese_concurrentielle.angle_proposition_valeur_commune }}\",\n  \"extraSectionPrompt\": \"{{ $json.output.synthese_concurrentielle.elements_differenciateurs.join(', ') }}\",\n  \"extraTitlePrompt\": \"D\u00e9couvrez les Meilleurs Services de {{ $json.output.synthese_concurrentielle.principaux_mots_cles[0] }} pour Vos \u00c9v\u00e9nements Inoubliables\",\n  \"articleLength\": \"short\",\n  \"numberOfSections\": 5\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        1300
+      ],
+      "id": "9491a498-91d0-44b1-b7fc-ce4d7db6aa47",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "=https://koala.sh/api/articles/{{ $json[\"articleId\"] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1340,
+        1300
+      ],
+      "id": "c2eef1e3-da5f-438e-8e13-54f64e5d1151",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "content": "## R\u00e9daction Contenu SEO Am\u00e9lior\u00e9 (RAG + V\u00e9rif)\n\n",
+        "height": 620,
+        "width": 1660,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        700,
+        1160
+      ],
+      "id": "b11a9b09-2d7d-489a-ad1a-4715b718d1ac",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "model": "o1-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -40,
+        1540
+      ],
+      "id": "36d9445c-9f40-40df-a2ed-dcf1040aca09",
+      "name": "OpenAI Chat Model1",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "content": "## Prompt Optimizer en Fonction des Data Concurrents\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 620,
+        "width": 1040,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        1160
+      ],
+      "id": "853163d9-9635-49db-9d0e-36c57efedd3c",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "### Contexte / R\u00f4le ###\nTu es un assistant sp\u00e9cialis\u00e9 en SEO et en analyse concurrentielle. Ton r\u00f4le est d'extraire et d'analyser les informations les plus pertinentes sur les concurrents \u00e0 partir de notre base de donn\u00e9es Supabase (`competitor_data_knowledge`). Ces informations serviront \u00e0 r\u00e9diger des articles SEO optimis\u00e9s, diff\u00e9renciants et align\u00e9s avec notre strat\u00e9gie de contenu.\n\n### Objectif ###\nFournir une synth\u00e8se concurrentielle d\u00e9taill\u00e9e et des recommandations bas\u00e9es sur les donn\u00e9es extraites, afin d'aider \u00e0 la cr\u00e9ation de contenu SEO de haute qualit\u00e9.\n\n### Instructions Principales / T\u00e2ches ###\n\n1. **Compr\u00e9hension du Sujet :**\n   - Re\u00e7ois un r\u00e9sum\u00e9 de l\u2019angle SEO vis\u00e9 (le sujet de l'article).\n   - Comprends le contexte et les objectifs SEO associ\u00e9s \u00e0 ce sujet.\n\n2. **Recherche dans la Base de Donn\u00e9es Supabase :**\n   - Acc\u00e8de \u00e0 la table pertinente dans Supabase (`competitor_data_knowledge`).\n   - Recherche les contenus les plus similaires au sujet fourni en utilisant les mots-cl\u00e9s et l\u2019angle SEO.\n   - S\u00e9lectionne les **5 \u00e0 10** meilleurs contenus concurrents en fonction de leur pertinence et de leur performance SEO.\n\n3. **Extraction des Points Cl\u00e9s :**\n   - Pour chaque contenu concurrent identifi\u00e9, extrait les **3 \u00e0 5** points cl\u00e9s les plus importants, tels que :\n     - **Structure de l'article** (titres, sous-titres, organisation des sections).\n     - **Mots-cl\u00e9s principaux et secondaires** utilis\u00e9s.\n     - **Titres accrocheurs** et **m\u00e9ta descriptions**.\n     - **Techniques d'optimisation SEO** (usage de balises, maillage interne, etc.).\n     - **\u00c9l\u00e9ments multim\u00e9dias** int\u00e9gr\u00e9s (images, vid\u00e9os, infographies).\n\n4. **Analyse Comparative :**\n   - Compare les diff\u00e9rents concurrents entre eux pour identifier :\n     - **Mots-cl\u00e9s manquants** ou sous-utilis\u00e9s.\n     - **Angles originaux** ou innovants non exploit\u00e9s.\n     - **Styles d'\u00e9criture** et **tons de voix** vari\u00e9s.\n     - **Opportunit\u00e9s de diff\u00e9renciation** (contenu unique, formats alternatifs, etc.).\n\n5. **Synth\u00e8se Concurrentielle :**\n   - Fournis une synth\u00e8se claire et structur\u00e9e sous la forme suivante :\n\n    **Synth\u00e8se concurrentielle** :\n    - **Principaux mots-cl\u00e9s (5 max)** :\n      1. Mot-cl\u00e9 1\n      2. Mot-cl\u00e9 2\n      3. Mot-cl\u00e9 3\n      4. Mot-cl\u00e9 4\n      5. Mot-cl\u00e9 5\n\n    - **Structure ou plan fr\u00e9quent** :\n      1. Section 1\n      2. Section 2\n      3. Section 3\n      4. Section 4\n      5. Section 5\n\n    - **Angle ou proposition de valeur commune** :\n      Description de l'angle ou de la proposition de valeur partag\u00e9e par les concurrents.\n\n    - **\u00c9l\u00e9ments diff\u00e9renciateurs** :\n      - \u00c9l\u00e9ment diff\u00e9renciateur 1\n      - \u00c9l\u00e9ment diff\u00e9renciateur 2\n      - \u00c9l\u00e9ment diff\u00e9renciateur 3\n      - \u00c9l\u00e9ment diff\u00e9renciateur 4\n\n    **Recommandations** :\n    - **Id\u00e9es de mots-cl\u00e9s suppl\u00e9mentaires** :\n      1. Mot-cl\u00e9 suppl\u00e9mentaire 1\n      2. Mot-cl\u00e9 suppl\u00e9mentaire 2\n      3. Mot-cl\u00e9 suppl\u00e9mentaire 3\n      4. Mot-cl\u00e9 suppl\u00e9mentaire 4\n      5. Mot-cl\u00e9 suppl\u00e9mentaire 5\n\n    - **Axes d\u2019am\u00e9lioration ou opportunit\u00e9s pour se distinguer** :\n      1. Axe d\u2019am\u00e9lioration 1\n      2. Axe d\u2019am\u00e9lioration 2\n      3. Axe d\u2019am\u00e9lioration 3\n      4. Axe d\u2019am\u00e9lioration 4\n\n### Consignes Suppl\u00e9mentaires ###\n\n- **Clart\u00e9 et Pr\u00e9cision :**\n  - Assure-toi que toutes les informations extraites sont pr\u00e9cises et pertinentes.\n  - Utilise un langage clair et concis, adapt\u00e9 \u00e0 une utilisation ult\u00e9rieure dans la g\u00e9n\u00e9ration de contenu.\n\n- **Adaptabilit\u00e9 :**\n  - Le prompt doit pouvoir s'adapter \u00e0 n'importe quel sujet ou ensemble de mots-cl\u00e9s fourni.\n  - G\u00e8re efficacement des variations dans la structure et les types de contenus concurrents.\n\n- **Validation des Donn\u00e9es :**\n  - V\u00e9rifie que les donn\u00e9es extraites sont compl\u00e8tes et exemptes d'erreurs.\n  - Informe en cas de donn\u00e9es manquantes ou de conflits dans les informations.\n\n### Exemple de Synth\u00e8se Concurrentielle G\u00e9n\u00e9r\u00e9e ###\n\n**Synth\u00e8se concurrentielle** :\n- **Principaux mots-cl\u00e9s (5 max)** :\n  1. photobooth Paris\n  2. location photobooth\n  3. animation photo\n  4. mariage Paris\n  5. souvenirs \u00e9v\u00e9nementiels\n\n- **Structure ou plan fr\u00e9quent** :\n  1. Introduction \u00e0 l'importance du photobooth pour animer un \u00e9v\u00e9nement\n  2. Description des offres disponibles pour la location de photobooth \u00e0 Paris\n  3. Avantages et conseils pour r\u00e9ussir l'animation photobooth\n  4. Options de personnalisation et occasions propices (mariages, anniversaires, soir\u00e9es d'entreprise)\n  5. Comment faire une r\u00e9servation et services additionnels offerts\n\n- **Angle ou proposition de valeur commune** :\n  L'animation photobooth est pr\u00e9sent\u00e9e comme un moyen ludique et m\u00e9morable d'immortaliser des \u00e9v\u00e9nements personnels ou professionnels, en offrant \u00e0 chaque invit\u00e9 une exp\u00e9rience unique et des souvenirs tangibles \u00e0 emporter.\n\n- **\u00c9l\u00e9ments diff\u00e9renciateurs** :\n  - Simplicit\u00e9 d'installation et d'utilisation\n  - Personnalisation des impressions\n  - Albums photo offerts\n  - Acc\u00e8s \u00e0 une galerie en ligne s\u00e9curis\u00e9e pour partager les photos\n\n**Recommandations** :\n- **Id\u00e9es de mots-cl\u00e9s suppl\u00e9mentaires** :\n  1. photobooth personnalisation Paris\n  2. animation photo corporate\n  3. souvenirs de f\u00eate\n  4. galerie photo en ligne\n  5. services photobooth \u00e0 domicile\n\n- **Axes d\u2019am\u00e9lioration ou opportunit\u00e9s pour se distinguer** :\n  1. Proposer une approche \u00e9co-responsable avec des mat\u00e9riaux durables pour les cabines\n  2. Offrir des options technologiques innovantes comme les GIF anim\u00e9s ou les vid\u00e9os courtes\n  3. Contextualiser les services avec des \u00e9tudes de cas sp\u00e9cifiques de clients satisfaits \u00e0 Paris\n  4. Mettre en avant une assistance client r\u00e9active pendant l'\u00e9v\u00e9nement pour garantir une utilisation sans encombre\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        60,
+        1300
+      ],
+      "id": "cf0600f6-f431-4492-aef4-597dc60e237c",
+      "name": "Data Concurrents"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Tu es un assistant sp\u00e9cialis\u00e9 dans la g\u00e9n\u00e9ration de contenus SEO optimis\u00e9s en utilisant l'API de KoalaWriter. \u00c0 partir des informations de synth\u00e8se concurrentielle fournies ci-dessous, g\u00e9n\u00e8re un payload JSON conforme \u00e0 la documentation de l'API de KoalaWriter. Assure-toi que tous les param\u00e8tres pertinents sont remplis pour maximiser l'efficacit\u00e9 SEO de l'article.\n\n### Informations de Synth\u00e8se Concurrentielle :\n\n**Principaux mots-cl\u00e9s (5 max)**:\n- [Liste des principaux mots-cl\u00e9s, un par ligne]\n\n**Structure ou plan fr\u00e9quent**:\n1. [Premi\u00e8re section]\n2. [Deuxi\u00e8me section]\n3. [Troisi\u00e8me section]\n4. [Quatri\u00e8me section]\n5. [Cinqui\u00e8me section]\n\n**Angle ou proposition de valeur commune**:\n[Description de l'angle ou de la proposition de valeur commune]\n\n**\u00c9l\u00e9ments diff\u00e9renciateurs**:\n- [Premier \u00e9l\u00e9ment diff\u00e9renciateur]\n- [Deuxi\u00e8me \u00e9l\u00e9ment diff\u00e9renciateur]\n- [Troisi\u00e8me \u00e9l\u00e9ment diff\u00e9renciateur]\n- [Quatri\u00e8me \u00e9l\u00e9ment diff\u00e9renciateur]\n\n**Recommandations** :\n\n**Id\u00e9es de mots-cl\u00e9s suppl\u00e9mentaires**:\n- [Mot-cl\u00e9 suppl\u00e9mentaire 1]\n- [Mot-cl\u00e9 suppl\u00e9mentaire 2]\n- [Mot-cl\u00e9 suppl\u00e9mentaire 3]\n- [Mot-cl\u00e9 suppl\u00e9mentaire 4]\n- [Mot-cl\u00e9 suppl\u00e9mentaire 5]\n\n**Axes d\u2019am\u00e9lioration ou opportunit\u00e9s pour se distinguer**:\n- [Premier axe d\u2019am\u00e9lioration]\n- [Deuxi\u00e8me axe d\u2019am\u00e9lioration]\n- [Troisi\u00e8me axe d\u2019am\u00e9lioration]\n- [Quatri\u00e8me axe d\u2019am\u00e9lioration]\n\n### Instructions :\n\n1. **targetKeyword**: S\u00e9lectionne le mot-cl\u00e9 principal parmi les principaux mots-cl\u00e9s fournis.\n2. **extraEntitiesPrompt**: Int\u00e8gre les mots-cl\u00e9s suppl\u00e9mentaires.\n3. **outline**: Utilise la structure ou le plan fr\u00e9quent fourni.\n4. **toneOfVoiceProfile**: Utilise \"seo_optimized\".\n5. **seoOptimizationLevel**: Utilise \"ai_powered\".\n6. **language**: \"French\".\n7. **articleType**: \"blog_post\".\n8. **extraIntroductionPrompt**: Bas\u00e9 sur l'angle ou la proposition de valeur commune, r\u00e9dige une introduction engageante.\n9. **extraSectionPrompt**: Int\u00e8gre les \u00e9l\u00e9ments diff\u00e9renciateurs et les axes d\u2019am\u00e9lioration.\n10. **includeFaq**: Active cette option pour ajouter une section FAQ pertinente.\n11. **extraTitlePrompt**: Cr\u00e9e un titre attractif mettant en avant la proposition de valeur unique.\n12. **multimediaOption**: Choisis \"images\" et sp\u00e9cifie le style \"photo\".\n13. **maxImages**: 5\n14. **readabilityMode**: \"default\"\n\n### Exemple de Payload JSON :\n\nG\u00e9n\u00e8re un JSON structur\u00e9 avec les param\u00e8tres ci-dessus. Assure-toi que le format est conforme \u00e0 la documentation de l'API de KoalaWriter.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        820,
+        1300
+      ],
+      "id": "b647a558-51a1-484d-b6e5-111d841c4559",
+      "name": "Prompt Optimizer (Concurrent + Client)"
+    },
+    {
+      "parameters": {
+        "title": "={{ $json.fields.Titre }}",
+        "additionalFields": {
+          "content": "={{ $json.fields[\"HTML Output\"] }}",
+          "status": "publish",
+          "format": "standard"
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        1300
+      ],
+      "id": "e30773eb-85fa-4151-91c3-c39ec62723d1",
+      "name": "Wordpress1",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.data }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "=file_id",
+                "value": "={{ $('Set File ID').item.json.file_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "214507dd-386b-46bf-b26b-3f414c7dcd48",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Set File ID').item.json.file_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "id": "2e7bffe3-9ee6-4e2d-ac0e-637f8ac63639",
+      "name": "Download File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1780,
+        680
+      ],
+      "executeOnce": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1PW3HIjbM0lktFZGg4aLS8zJitY_M-hFX",
+          "mode": "list",
+          "cachedResultName": "Data Concurrents",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1PW3HIjbM0lktFZGg4aLS8zJitY_M-hFX"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "id": "e4330572-1483-4170-8a63-ec2bcc89a30a",
+      "name": "File Created",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        840
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1PW3HIjbM0lktFZGg4aLS8zJitY_M-hFX",
+          "mode": "list",
+          "cachedResultName": "Data Concurrents",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1PW3HIjbM0lktFZGg4aLS8zJitY_M-hFX"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "id": "93123cb9-eaed-451d-997c-6d39cbcd217f",
+      "name": "File Updated",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        680
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "ec8fb5d6-a3e5-414e-bb12-235e260cb328",
+      "name": "Extract Document Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        860
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4ab81e29-6664-40c0-9d50-28def0f8a222",
+      "name": "Recursive Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "documents"
+      },
+      "id": "57d0a496-e1ce-46f0-a77f-16cbd37daaa8",
+      "name": "Delete Old Doc Rows",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        860
+      ],
+      "alwaysOutputData": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10646eae-ae46-4327-a4dc-9987c2d76173",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a2807404-e8e5-4063-93c0-4ce27a061c44",
+      "name": "Set File ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1620,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "id": "99a47f89-ff99-453d-b4e4-02e6c4f4ff21",
+      "name": "Insert into Supabase Vectorstore",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        680
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "fca42f9a-dc86-4ac9-b013-89ca5ccbc0c7",
+      "name": "Embeddings OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        880
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents_client",
+          "mode": "list",
+          "cachedResultName": "documents_client"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        940,
+        700
+      ],
+      "id": "24f882f7-9f32-41c6-a2c8-cd4f20535336",
+      "name": "Supabase Vector Store",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        820,
+        940
+      ],
+      "id": "f889b84f-941b-4b68-8d6f-0e035e36b945",
+      "name": "Embeddings OpenAI3",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        880
+      ],
+      "id": "0ccf15e4-c675-4c66-8ae8-3e4e01d2f773",
+      "name": "Default Data Loader1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        1000
+      ],
+      "id": "fb9e3471-1e44-44e5-8ff6-af529eb0181e",
+      "name": "Recursive Character Text Splitter1"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "competitor_data_knowledge",
+        "toolDescription": "Database of what competitor do concerning SEO",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        220,
+        1480
+      ],
+      "id": "a6101060-4f82-4700-9284-5c52db1bae0b",
+      "name": "Supabase Vector Store1",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "content": "## Data Concurrent RAG \n",
+        "height": 560,
+        "width": 940,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        580
+      ],
+      "id": "63c3cc61-b899-45b7-8590-6f77cc532e20",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        420,
+        1600
+      ],
+      "id": "8a1657ba-4e3a-469f-8b65-11f12b1c1048",
+      "name": "Embeddings OpenAI",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -240,
+        1300
+      ],
+      "id": "9ccca9da-976b-4111-8ec6-709a679af644",
+      "name": "When chat message received",
+      "webhookId": "7e464fec-da69-43d4-80c9-e3676c6f58f5"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        100,
+        1580
+      ],
+      "id": "5c3f873a-afaa-437b-b845-0ec3e2d1f559",
+      "name": "Postgres Chat Memory",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "model": "o1-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        1520
+      ],
+      "id": "dc9b9499-6939-4069-995d-0e0914b545dc",
+      "name": "OpenAI Chat Model2",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        880,
+        1520
+      ],
+      "id": "027975f2-d6be-4dce-bb81-84f4b010ea65",
+      "name": "Postgres Chat Memory1",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"synthese_concurrentielle\": {\n    \"principaux_mots_cles\": [\n      \"{{extractListItems(text, '**Principaux mots-cl\u00e9s (5 max)**') }}\"\n    ],\n    \"structure_plan_frequent\": [\n      \"{{extractListItems(text, '**Structure ou plan fr\u00e9quent**') }}\"\n    ],\n    \"angle_proposition_valeur_commune\": \"{{extractText(text, '**Angle ou proposition de valeur commune**') }}\",\n    \"elements_differenciateurs\": [\n      \"{{extractListItems(text, '**\u00c9l\u00e9ments diff\u00e9renciateurs**') }}\"\n    ]\n  },\n  \"recommandations\": {\n    \"idees_mots_cles_supplementaires\": [\n      \"{{extractListItems(text, '**Id\u00e9es de mots-cl\u00e9s suppl\u00e9mentaires**') }}\"\n    ],\n    \"axes_amelioration_opportunites\": [\n      \"{{extractListItems(text, '**Axes d\u2019am\u00e9lioration ou opportunit\u00e9s pour se distinguer**') }}\"\n    ]\n  }\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1020,
+        1520
+      ],
+      "id": "c54d7edf-555d-4f94-ae7f-de0ffa3a1ea4",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.html }}",
+        "options": {
+          "systemMessage": "### Contexte / R\u00f4le ###\nTu es un expert en SEO sp\u00e9cialis\u00e9 dans l'optimisation de contenus web. Ta mission est d'analyser un article fourni en format HTML et de fournir des axes d'am\u00e9lioration SEO d\u00e9taill\u00e9s pour optimiser sa visibilit\u00e9 et son classement dans les moteurs de recherche.\n\n### Instructions ###\n1. **Analyse des Mots-cl\u00e9s :**\n   - Identifie les mots-cl\u00e9s principaux et secondaires utilis\u00e9s dans l'article.\n   - \u00c9value leur pertinence et leur r\u00e9partition dans le contenu.\n   - Sugg\u00e8re des mots-cl\u00e9s suppl\u00e9mentaires pertinents \u00e0 int\u00e9grer.\n\n2. **Structure de l'Article :**\n   - V\u00e9rifie la hi\u00e9rarchie des titres (H1, H2, H3, etc.) et leur ad\u00e9quation avec le contenu.\n   - Analyse la coh\u00e9rence et l'organisation des sections.\n   - Propose des am\u00e9liorations pour une structure plus optimis\u00e9e.\n\n3. **Balises M\u00e9ta :**\n   - V\u00e9rifie la pr\u00e9sence et l'optimisation des balises titre et description.\n   - Sugg\u00e8re des am\u00e9liorations pour les balises m\u00e9ta si n\u00e9cessaire.\n\n4. **Lisibilit\u00e9 et Qualit\u00e9 du Contenu :**\n   - \u00c9value la lisibilit\u00e9 g\u00e9n\u00e9rale de l'article (longueur des phrases, vocabulaire utilis\u00e9, etc.).\n   - Propose des am\u00e9liorations pour rendre le contenu plus clair et engageant.\n   - V\u00e9rifie l'absence de contenu dupliqu\u00e9 ou de r\u00e9p\u00e9titions inutiles.\n\n5. **Liens Internes et Externes :**\n   - Analyse la pr\u00e9sence et la pertinence des liens internes et externes.\n   - Sugg\u00e8re des opportunit\u00e9s d'ajout ou d'am\u00e9lioration des liens pour renforcer le maillage interne et la cr\u00e9dibilit\u00e9 externe.\n\n6. **Optimisation des Images et Multim\u00e9dias :**\n   - V\u00e9rifie l'utilisation des attributs alt pour les images.\n   - Analyse la taille et le format des images pour optimiser le temps de chargement.\n   - Sugg\u00e8re des optimisations pour les \u00e9l\u00e9ments multim\u00e9dias int\u00e9gr\u00e9s.\n\n7. **Performance et Vitesse de Chargement :**\n   - Donne des recommandations pour am\u00e9liorer la vitesse de chargement de la page.\n   - Sugg\u00e8re des optimisations techniques (compression des fichiers, minification des scripts, etc.).\n\n8. **Compatibilit\u00e9 Mobile :**\n   - V\u00e9rifie si l'article est optimis\u00e9 pour les appareils mobiles.\n   - Propose des am\u00e9liorations pour garantir une exp\u00e9rience utilisateur fluide sur tous les types d'appareils.\n\n9. **Utilisation des Donn\u00e9es Structur\u00e9es :**\n   - Analyse la pr\u00e9sence de donn\u00e9es structur\u00e9es (schema.org) dans l'article.\n   - Sugg\u00e8re des impl\u00e9mentations de balisage pour am\u00e9liorer la compr\u00e9hension du contenu par les moteurs de recherche.\n\n10. **Autres Facteurs SEO :**\n    - \u00c9value l'utilisation des balises d'en-t\u00eate, des listes \u00e0 puces, des tableaux, etc.\n    - Sugg\u00e8re des am\u00e9liorations pour une meilleure optimisation globale.\n\n### Format de R\u00e9ponse ###\nPr\u00e9sente tes suggestions de mani\u00e8re claire et structur\u00e9e, en les classant par cat\u00e9gorie comme ci-dessus. Pour chaque suggestion, explique bri\u00e8vement pourquoi elle est importante et comment la mettre en \u0153uvre.\n\n### Exemple de R\u00e9ponse :\n\n**1. Analyse des Mots-cl\u00e9s :**\n- **Suggestion :** Int\u00e9grer le mot-cl\u00e9 \"Photobooth interactif Paris\" dans le sous-titre H2.\n  - **Pourquoi :** Cela renforce la pertinence pour ce mot-cl\u00e9 et am\u00e9liore le r\u00e9f\u00e9rencement pour les recherches associ\u00e9es.\n\n**2. Structure de l'Article :**\n- **Suggestion :** Ajouter un H2 intitul\u00e9 \"Les avantages de choisir un photobooth haute technologie\".\n  - **Pourquoi :** Cela permet d'organiser le contenu de mani\u00e8re plus logique et d'inclure des mots-cl\u00e9s suppl\u00e9mentaires.\n\n**3. Balises M\u00e9ta :**\n- **Suggestion :** Optimiser la balise m\u00e9ta description pour inclure les mots-cl\u00e9s principaux et une incitation \u00e0 l'action.\n  - **Pourquoi :** Une m\u00e9ta description optimis\u00e9e augmente le taux de clics depuis les r\u00e9sultats de recherche.\n\n**...**\n\n---\n\n### **Instructions pour Utiliser le Prompt Syst\u00e8me :**\n\n1. **Int\u00e9gration dans l'Agent IA :**\n   - Copiez le prompt ci-dessus et int\u00e9grez-le dans le syst\u00e8me prompt de votre agent IA d\u00e9di\u00e9 \u00e0 l'analyse SEO.\n\n2. **Entr\u00e9e de l'Agent :**\n   - Fournissez l'article final en format HTML \u00e0 l'agent IA pour analyse.\n\n3. **R\u00e9ception des Suggestions :**\n   - L'agent IA g\u00e9n\u00e9rera une liste structur\u00e9e de suggestions d'am\u00e9lioration SEO bas\u00e9e sur l'analyse effectu\u00e9e.\n\n4. **Mise en \u0152uvre des Recommandations :**\n   - Utilisez les suggestions fournies pour optimiser votre article et am\u00e9liorer son r\u00e9f\u00e9rencement.\n\n---\n\n### **Conclusion**\n\nEn utilisant ce prompt syst\u00e8me optimis\u00e9, votre agent IA sera en mesure de fournir des analyses SEO pr\u00e9cises et des recommandations concr\u00e8tes pour am\u00e9liorer la performance de vos articles en ligne. Cela permettra d'assurer que chaque contenu publi\u00e9 est non seulement de haute qualit\u00e9, mais \u00e9galement parfaitement optimis\u00e9 pour les moteurs de recherche, maximisant ainsi sa visibilit\u00e9 et son impact.\n\nN'h\u00e9sitez pas \u00e0 ajuster le prompt en fonction de besoins sp\u00e9cifiques ou de nouvelles strat\u00e9gies SEO que vous souhaitez int\u00e9grer.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1520,
+        1300
+      ],
+      "id": "8e198ed2-5dab-4768-8706-0733a86ef2cf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        1500
+      ],
+      "id": "065c1c8f-078a-474f-b2f9-a5702297bd36",
+      "name": "OpenAI Chat Model",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        1580,
+        1500
+      ],
+      "id": "a21c2aa5-47a4-485b-9e2f-2f8578630395",
+      "name": "Postgres Chat Memory2",
+      "credentials": {}
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Wordpress": {
+      "main": [
+        []
+      ]
+    },
+    "Loop": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GetArticles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetSiteInternet": {
+      "main": [
+        [
+          {
+            "node": "Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetArticles": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Compare Datasets": {
+      "main": [
+        [
+          {
+            "node": "Store Article Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        []
+      ]
+    },
+    "Store Article Data": {
+      "main": [
+        [
+          {
+            "node": "Loop",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GetSiteInternet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Data Concurrents",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Concurrents": {
+      "main": [
+        [
+          {
+            "node": "Prompt Optimizer (Concurrent + Client)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Optimizer (Concurrent + Client)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Wordpress1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Extract Document Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Created": {
+      "main": [
+        [
+          {
+            "node": "Set File ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Updated": {
+      "main": [
+        [
+          {
+            "node": "Set File ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Document Text": {
+      "main": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Doc Rows": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File ID": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Doc Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert into Supabase Vectorstore",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI3": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader1": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter1": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader1",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Data Concurrents",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Data Concurrents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Data Concurrents",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Prompt Optimizer (Concurrent + Client)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Prompt Optimizer (Concurrent + Client)",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Prompt Optimizer (Concurrent + Client)",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aa63766a-6bf4-4465-9438-8654fb462e74",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "af1987ed0d10730a8b41a2bd922cb242750230665289a7857ae759963b7dd4f1"
+  },
+  "id": "MaVegQk6QWx2oZFv",
+  "tags": []
+}

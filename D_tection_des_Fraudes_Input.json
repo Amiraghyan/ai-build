@@ -1,0 +1,179 @@
+{
+  "name": "Détection des Fraudes Input",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wbmdvq1rzf.execute-api.ap-southeast-2.amazonaws.com/dev",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": [\n    [\n      {{ $json.time }},\n      {{ $json.V1 }},\n      {{ $json.V2 }},\n      {{ $json.V3 }},\n      {{ $json.V4 }},\n      {{ $json.V5 }},\n      {{ $json.V6 }},\n      {{ $json.V7 }},\n      {{ $json.V8 }},\n      {{ $json.V9 }},\n      {{ $json.V10 }},\n      {{ $json.V11 }},\n      {{ $json.V12 }},\n      {{ $json.V13 }},\n      {{ $json.V14 }},\n      {{ $json.V15 }},\n      {{ $json.V16 }},\n      {{ $json.V17 }},\n      {{ $json.V18 }},\n      {{ $json.V19 }},\n      {{ $json.V20 }},\n      {{ $json.V21 }},\n      {{ $json.V22 }},\n      {{ $json.V23 }},\n      {{ $json.V24 }},\n      {{ $json.V25 }},\n      {{ $json.V26 }},\n      {{ $json.V27 }},\n      {{ $json.V28 }},\n      {{ $json.Amount }}\n    ],\n    [\n      {{ $json.time }},\n      {{ $json.V1 }},\n      {{ $json.V2 }},\n      {{ $json.V3 }},\n      {{ $json.V4 }},\n      {{ $json.V5 }},\n      {{ $json.V6 }},\n      {{ $json.V7 }},\n      {{ $json.V8 }},\n      {{ $json.V9 }},\n      {{ $json.V10 }},\n      {{ $json.V11 }},\n      {{ $json.V12 }},\n      {{ $json.V13 }},\n      {{ $json.V14 }},\n      {{ $json.V15 }},\n      {{ $json.V16 }},\n      {{ $json.V17 }},\n      {{ $json.V18 }},\n      {{ $json.V19 }},\n      {{ $json.V20 }},\n      {{ $json.V21 }},\n      {{ $json.V22 }},\n      {{ $json.V23 }},\n      {{ $json.V24 }},\n      {{ $json.V25 }},\n      {{ $json.V26 }},\n      {{ $json.V27 }},\n      {{ $json.V28 }},\n      {{ $json.Amount }}\n    ]\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        0
+      ],
+      "id": "c96e5f1e-2dd2-4f97-8221-6bc721dcd54e",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns",
+          "mode": "list",
+          "cachedResultName": "Carte Bancaire Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Feuille 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        0
+      ],
+      "id": "f9004763-af5a-4fbd-b7f0-022ddc5453e5",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "HRfeszd7cCZ1bhnL",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"time\" : {{ $json['7527.00'] }},\n  \"V1\": {{ $json['0.0084303648955825'] }},\n  \"V2\": {{ $json['4.13783683497998'] }},\n  \"V3\": {{ $json['-6.24069657194744'] }},\n  \"V4\": {{ $json['6.6757321631344'] }},\n  \"V5\": {{ $json['0.768307024571449'] }},\n  \"V6\": {{ $json['-3.35305954788994'] }},\n  \"V7\": {{ $json['-1.63173467271809'] }},\n  \"V8\": {{ $json['0.15461244822474'] }},\n  \"V9\": {{ $json['-2.79589246446281'] }},\n  \"V10\": {{ $json['-6.18789062970647'] }},\n  \"V11\": {{ $json['5.66439470857116'] }},\n  \"V12\": {{ $json['-9.85448482287037'] }},\n  \"V13\": {{ $json['-0.306166658250084'] }},\n  \"V14\": {{ $json['-10.6911962118171'] }},\n  \"V15\": {{ $json['-0.638498192673322'] }},\n  \"V16\": {{ $json['-2.04197379107768'] }},\n  \"V17\": {{ $json['-1.12905587703585'] }},\n  \"V18\": {{ $json['0.116452521226364'] }},\n  \"V19\": {{ $json['-1.93466573889727'] }},\n  \"V20\": {{ $json['0.488378221134715'] }},\n  \"V21\": {{ $json['0.36451420978479'] }},\n  \"V22\": {{ $json['-0.608057133838703'] }},\n  \"V23\": {{ $json['-0.539527941820093'] }},\n  \"V24\": {{ $json['0.128939982991813'] }},\n  \"V25\": {{ $json['1.48848121006868'] }},\n  \"V26\": {{ $json['0.50796267782385'] }},\n  \"V27\": {{ $json['0.735821636119662'] }},\n  \"V28\": {{ $json['0.513573740679437'] }},\n  \"Amount\": {{ $json['149.62'] }},\n\n}",
+        "includeOtherFields": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "3f6287e7-6f08-4b0c-8e83-9855dcc4c662",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns",
+          "mode": "list",
+          "cachedResultName": "Carte Bancaire Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1863347950,
+          "mode": "list",
+          "cachedResultName": "Feuille 2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns/edit#gid=1863347950"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "predictions"
+          ],
+          "schema": [
+            {
+              "id": "predictions",
+              "displayName": "predictions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        420,
+        0
+      ],
+      "id": "2e9fac9f-35f8-4272-97a6-edef384c8ce0",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DJE7lgcevvk6xeMF",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5b693f56-30d0-48b8-a2e4-2740a1b9d117",
+  "meta": {
+    "instanceId": "af1987ed0d10730a8b41a2bd922cb242750230665289a7857ae759963b7dd4f1"
+  },
+  "id": "6vPgWtSplXA6gW83",
+  "tags": []
+}

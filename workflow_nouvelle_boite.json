@@ -1,0 +1,626 @@
+{
+  "name": "workflow_nouvelle_boite",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "67238088-edd2-4427-af19-d2a8120080a4",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://bodacc-datadila.opendatasoft.com/api/records/1.0/search/?dataset=annonces-commerciales&refine.numerodepartement=33&refine.familleavis=creation&rows=7000&sort=dateparution",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        -100
+      ],
+      "id": "e57326b0-f58c-432a-b26c-07990174571f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appcoaWi0U6IN3NF7",
+          "mode": "list",
+          "cachedResultName": "Nouvelle Boîte - Youtube",
+          "cachedResultUrl": "https://airtable.com/appcoaWi0U6IN3NF7"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl14QmAI0V2NGULx",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appcoaWi0U6IN3NF7/tbl14QmAI0V2NGULx"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        180
+      ],
+      "id": "a9e15b98-bacd-4db0-8cbc-4350c6e5908d",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "bnOzaEmBrdTTreMh",
+          "name": "Airtable - GS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node: Format BODACC JSON data for Airtable\nconst output = [];\n\n// Assuming the input (items[0].json) contains an object with a \"records\" array from BODACC\nconst records = items[0].json.records || [];\nfor (const record of records) {\n    // Create a new object with all fields of the record\n    const formatted = { ...record.fields };\n    \n    // Include record metadata fields\n    formatted.recordid = record.recordid;\n    formatted.datasetid = record.datasetid;\n    formatted.record_timestamp = record.record_timestamp;\n    \n    // Parse JSON string fields into objects (if applicable)\n    for (const key in formatted) {\n        if (typeof formatted[key] === 'string' && \n            (formatted[key].startsWith('{') || formatted[key].startsWith('['))) {\n            try {\n                formatted[key] = JSON.parse(formatted[key]);\n            } catch (error) {\n                // If parsing fails, leave the value as the original string\n            }\n        }\n    }\n    \n    // Add the formatted record to the output array as a separate item\n    output.push({ json: formatted });\n}\n\n// Return the array of formatted records (each as an individual item)\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -100
+      ],
+      "id": "ed3a9904-9675-4fb5-a325-36a9526e2999",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\n\nconst oneMonthAgo = new Date(now);\noneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);\n\nconst filteredItems = items.filter(item => {\n  const dateParution = new Date(item.json.dateparution);\n  return dateParution > oneMonthAgo;\n});\n\nreturn filteredItems"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        -100
+      ],
+      "id": "51ebf81d-3b6e-4958-a711-9d4e2847814c",
+      "name": "Code1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        980,
+        20
+      ],
+      "id": "dd5df753-2d8b-49da-bbf4-ef046358e68f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const uniqueKey = 'id';\nconst inputData = items.map(item => item.json);\n\n\nconst dedupedMap = new Map();\nfor (const item of inputData) {\n  const key = item[uniqueKey];\n  if (!dedupedMap.has(key)) {\n    dedupedMap.set(key, item);\n  }\n}\n\nreturn Array.from(dedupedMap.values()).map(json => ({json}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        20
+      ],
+      "id": "9c82b2e0-de4c-4525-be4f-6ffed860be33",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appcoaWi0U6IN3NF7",
+          "mode": "list",
+          "cachedResultName": "Nouvelle Boîte - Youtube",
+          "cachedResultUrl": "https://airtable.com/appcoaWi0U6IN3NF7"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl14QmAI0V2NGULx",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appcoaWi0U6IN3NF7/tbl14QmAI0V2NGULx"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "region_code": 0,
+            "numero_annonce": 0,
+            "adresse siège social": "={{ $json.listepersonnes.personne.numeroImmatriculation.numeroIdentification }}",
+            "activités": "={{ $json.listepersonnes.personne.nom }}",
+            "denomination": "={{ $json.listepersonnes.personne.prenom }}",
+            "date_commencement_activité": "={{ $json.registre }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "denomination",
+              "displayName": "denomination",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "activités",
+              "displayName": "activités",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "adresse siège social",
+              "displayName": "adresse siège social",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "date_commencement_activité",
+              "displayName": "date_commencement_activité",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ville",
+              "displayName": "ville",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "type personne",
+              "displayName": "type personne",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "immatriculation",
+              "displayName": "immatriculation",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "RCS",
+              "displayName": "RCS",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nom greffe",
+              "displayName": "nom greffe",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "registre",
+              "displayName": "registre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ispdf_unitaire",
+              "displayName": "ispdf_unitaire",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cp",
+              "displayName": "cp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "région",
+              "displayName": "région",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "commerçant",
+              "displayName": "commerçant",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tribunal",
+              "displayName": "tribunal",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "url complet",
+              "displayName": "url complet",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "parution",
+              "displayName": "parution",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "publicationavis_facette",
+              "displayName": "publicationavis_facette",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "typeavis_lib",
+              "displayName": "typeavis_lib",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "typeavis",
+              "displayName": "typeavis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "familleavis_lib",
+              "displayName": "familleavis_lib",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "famille_avis",
+              "displayName": "famille_avis",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "departement_nom_officiel",
+              "displayName": "departement_nom_officiel",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_departement",
+              "displayName": "num_departement",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "date_parution",
+              "displayName": "date_parution",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categorie_creation",
+              "displayName": "categorie_creation",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "region_code",
+              "displayName": "region_code",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "numero_annonce",
+              "displayName": "numero_annonce",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "record_id",
+              "displayName": "record_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "dataset_id",
+              "displayName": "dataset_id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "record_timestamp",
+              "displayName": "record_timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        20
+      ],
+      "id": "1d2a801a-3b33-40b7-bf88-ac089bc81989",
+      "name": "Airtable1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "bnOzaEmBrdTTreMh",
+          "name": "Airtable - GS"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Airtable1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fba31bb5-5ddf-4468-900f-b988851f8978",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "af1987ed0d10730a8b41a2bd922cb242750230665289a7857ae759963b7dd4f1"
+  },
+  "id": "xk0p6pJegLuMXuU8",
+  "tags": []
+}

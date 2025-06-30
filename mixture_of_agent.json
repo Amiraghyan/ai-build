@@ -1,0 +1,837 @@
+{
+  "name": "MOA",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -860,
+        -60
+      ],
+      "id": "68931480-d722-46f5-b310-a1a9930e0a2f",
+      "name": "When chat message received",
+      "webhookId": "********-****-****-****-************"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "Anonymisation Données MVP"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        -60
+      ],
+      "id": "0801b42e-674e-4ce7-b133-ab70d3bebd50",
+      "name": "Anonymisation Données"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.fields.Variable }}",
+        "options": {
+          "systemMessage": "****************** (Message système masqué pour des raisons de sécurité) ******************"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -100,
+        -60
+      ],
+      "id": "e6d45316-edc2-484b-900b-ecfdf5f80432",
+      "name": "Deepseek R1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.fields.Variable }}",
+        "options": {
+          "systemMessage": "****************** (Message système masqué pour des raisons de sécurité) ******************"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -100,
+        260
+      ],
+      "id": "6dbda4da-ddea-497b-be37-1dd6f3d6e329",
+      "name": "Claude Sonnet 3.5"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "Dynamic Prompting",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH"
+        },
+        "table": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH/tbln3rUKl2holIRGN"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Variable": "={{ $json[\"texte_anonymisé\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Variable",
+              "displayName": "Variable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Output du Prompt",
+              "displayName": "Output du Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -400,
+        -60
+      ],
+      "id": "f56bfd07-c619-488d-a270-6f9d63ef8ca3",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "**********",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -200
+      ],
+      "id": "d2822d4e-0e84-4761-9360-54d141c90684",
+      "name": "GPT 4o",
+      "credentials": {
+        "openAiApi": {
+          "id": "**********",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.5-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -120,
+        460
+      ],
+      "id": "8ca339fa-92c9-4433-8041-a7b9a25ad7e9",
+      "name": "Claude Sonnet",
+      "credentials": {
+        "openAiApi": {
+          "id": "**********",
+          "name": "openrouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "Dynamic Prompting",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH"
+        },
+        "table": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "MOA",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH/tbl6hrOpjcBrLUvCx"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "GPT 4o": "={{ $json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "GPT 4o",
+              "displayName": "GPT 4o",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Deepseek R1",
+              "displayName": "Deepseek R1",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Claude Sonnet",
+              "displayName": "Claude Sonnet",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Combinaison Résultats",
+              "displayName": "Combinaison Résultats",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes /10",
+              "displayName": "Notes /10",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        280,
+        -400
+      ],
+      "id": "af713da6-388f-4493-a47b-6b4fe987754a",
+      "name": "Airtable1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "**********",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "Dynamic Prompting",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH"
+        },
+        "table": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "MOA",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH/tbl6hrOpjcBrLUvCx"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Deepseek R1": "={{ $json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "GPT 4o",
+              "displayName": "GPT 4o",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Deepseek R1",
+              "displayName": "Deepseek R1",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Claude Sonnet",
+              "displayName": "Claude Sonnet",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Combinaison Résultats",
+              "displayName": "Combinaison Résultats",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes /10",
+              "displayName": "Notes /10",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        280,
+        -60
+      ],
+      "id": "830228e9-b133-4737-8175-401f974bae52",
+      "name": "Airtable2",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "**********",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "Dynamic Prompting",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH"
+        },
+        "table": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "MOA",
+          "cachedResultUrl": "https://airtable.com/appzZDez7apWqZAeH/tbl6hrOpjcBrLUvCx"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Claude Sonnet": "={{ $json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "GPT 4o",
+              "displayName": "GPT 4o",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Deepseek R1",
+              "displayName": "Deepseek R1",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Claude Sonnet",
+              "displayName": "Claude Sonnet",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Combinaison Résultats",
+              "displayName": "Combinaison Résultats",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes /10",
+              "displayName": "Notes /10",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        280,
+        260
+      ],
+      "id": "e5bc9bf9-966f-4952-a859-b63401d2b849",
+      "name": "Airtable3",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "**********",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-r1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -140,
+        100
+      ],
+      "id": "4d8f7c20-1e16-44b4-b5f6-38bfc8bafeef",
+      "name": "Deepseek R2",
+      "credentials": {
+        "openAiApi": {
+          "id": "**********",
+          "name": "openrouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        640,
+        -60
+      ],
+      "id": "5b866720-0990-486e-ae20-af79cc6696ff",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -60
+      ],
+      "id": "f54e9662-f7fe-46e2-b682-f569510b4193",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -20,
+        -200
+      ],
+      "id": "efb967a3-4238-4fe4-b681-e138a49cf1ab",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        440
+      ],
+      "id": "773289e3-84dc-4f46-8fc2-a61a03421b91",
+      "name": "Window Buffer Memory2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.fields.Variable }}",
+        "options": {
+          "systemMessage": "****************** (Message système masqué pour des raisons de sécurité) ******************"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -100,
+        -400
+      ],
+      "id": "3fefaedc-f837-45c6-a9c5-188f01337261",
+      "name": "GPT 4o1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "{{ $json.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        100
+      ],
+      "id": "95fa6748-2333-475d-8893-d8a39ccaef84",
+      "name": "Window Buffer Memory1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "**********",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "****************** (Contenu du message masqué pour des raisons de sécurité) ******************",
+              "role": "system"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1240,
+        -60
+      ],
+      "id": "4da87cf8-d6d6-4011-9cb4-b73be178ae9c",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "**********",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Anonymisation Données",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anonymisation Données": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deepseek R1": {
+      "main": [
+        [
+          {
+            "node": "Airtable2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Sonnet 3.5": {
+      "main": [
+        [
+          {
+            "node": "Airtable3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Deepseek R1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GPT 4o1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Claude Sonnet 3.5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPT 4o": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "GPT 4o1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Sonnet": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Claude Sonnet 3.5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Airtable3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Deepseek R2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Deepseek R1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "GPT 4o1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Claude Sonnet 3.5",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPT 4o1": {
+      "main": [
+        [
+          {
+            "node": "Airtable1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Deepseek R1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "11ab7cf6-e450-4757-acde-44566bd39db2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "**********"
+  },
+  "id": "ag8izwv14WtyfkZa",
+  "tags": []
+}

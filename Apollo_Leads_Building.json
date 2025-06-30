@@ -1,0 +1,327 @@
+{
+  "name": "Apollo Leads Building",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "073761ff-b5a9-4314-a8c5-5aa3447bf9f0",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "="
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "57e2af4d-07eb-413a-9a66-3e2e05bebc81",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "66aa6975-dc82-4898-9484-ef83456fa50a",
+              "name": "first_name",
+              "value": "={{ $json.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "05066da4-8f12-4f72-a168-97ee285ba556",
+              "name": "last_name",
+              "value": "={{ $json.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "20481285-ab7f-44fd-90a6-04ddca3f6ce9",
+              "name": "linkedin_url",
+              "value": "={{ $json.linkedin_url }}",
+              "type": "string"
+            },
+            {
+              "id": "ae51ed3e-f8c5-45ba-b9f7-a78b203c56a8",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "3539e4f7-2de5-4928-b463-34a20d04dfe6",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "5e76f48e-0fe2-469a-b1fd-6716570eb1a1",
+              "name": "city",
+              "value": "={{ $json.city }}",
+              "type": "string"
+            },
+            {
+              "id": "8cf64fd5-2666-4ac6-9e94-8ee51198ecf0",
+              "name": "organization.name",
+              "value": "={{ $json.organization.name }}",
+              "type": "string"
+            },
+            {
+              "id": "24258a50-faf8-4950-83ca-1ed955918a3b",
+              "name": "organization.website_url",
+              "value": "={{ $json.organization.website_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        420,
+        0
+      ],
+      "id": "d3a11c49-8791-471b-8707-788d9f9b3fd8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        640,
+        0
+      ],
+      "id": "f0f5c4d2-63eb-4829-a0f4-d53983b8df69",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appn47mGw0wwO10hL",
+          "mode": "list",
+          "cachedResultName": "Ramzi Leads",
+          "cachedResultUrl": "https://airtable.com/appn47mGw0wwO10hL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnFg59UyyZAJbQZ",
+          "mode": "list",
+          "cachedResultName": "Architecte",
+          "cachedResultUrl": "https://airtable.com/appn47mGw0wwO10hL/tblnFg59UyyZAJbQZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Prénom": "={{ $json.first_name }}",
+            "Nom": "={{ $json.last_name }}",
+            "Linkedin": "={{ $json.linkedin_url }}",
+            "Titre": "={{ $json.title }}",
+            "Email": "={{ $json.email }}",
+            "Ville": "={{ $json.city }}",
+            "Nom Entreprise": "={{ $json.organization.name }}",
+            "Site Entreprise": "={{ $json.organization.website_url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Prénom",
+              "displayName": "Prénom",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nom",
+              "displayName": "Nom",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Linkedin",
+              "displayName": "Linkedin",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Titre",
+              "displayName": "Titre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Ville",
+              "displayName": "Ville",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nom Entreprise",
+              "displayName": "Nom Entreprise",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Site Entreprise",
+              "displayName": "Site Entreprise",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        860,
+        0
+      ],
+      "id": "5ff86856-9074-421e-9818-fe58d9528efc",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "631pm9fJTkclt1rd",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Comment l'utiliser ?\n\nLes logiciels nécessaires : \n1- Apollo (base de donnée de leads).\n2- Apify - saas avec les scraper\n3- Airtable/ Excel / Google sheet pour stocker les leads\n\nNe pas scraper +1000 leads par jour.\n\nAttention créer un compte apollo avec email entreprise",
+        "width": 600
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        240
+      ],
+      "id": "544c9b38-eced-434d-9a29-6b90e23064f6",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "15456fcd-6d89-42ed-afee-2171112e50cb",
+  "meta": {
+    "instanceId": "af1987ed0d10730a8b41a2bd922cb242750230665289a7857ae759963b7dd4f1"
+  },
+  "id": "8Esv2NSsVQJ6Vvi3",
+  "tags": []
+}

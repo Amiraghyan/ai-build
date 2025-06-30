@@ -1,0 +1,252 @@
+{
+  "name": "Data Insight Rapide",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        0
+      ],
+      "id": "f019b5c7-399e-4fdd-bc9a-6bc95bafa55c",
+      "name": "When chat message received",
+      "webhookId": "1a92cd77-bc31-404a-a08c-bc66f2351e11"
+    },
+    {
+      "parameters": {
+        "promptType": "=define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "=Vous êtes un agent d'analyse de données spécialisé dans les dynamiques des marchés financiers américains et internationaux couvrant la période de 2019 à 2024. Vous avez accès à une base de données complète contenant les informations suivantes pour chaque actif :\n\n- **Date** : La date des données enregistrées, au format JJ-MM-AAAA.\n  \n**Énergie et Commodités :**\n- **Natural_Gas_Price** : Prix du gaz naturel en USD par million British thermal units (MMBtu).\n- **Natural_Gas_Vol.** : Volume des transactions de gaz naturel.\n- **Crude_oil_Price** : Prix du pétrole brut en USD par baril.\n- **Crude_oil_Vol.** : Volume des transactions de pétrole brut.\n- **Copper_Price** : Prix du cuivre en USD par livre.\n- **Copper_Vol.** : Volume des transactions de cuivre.\n- **Platinum_Price** : Prix du platine en USD par once troy.\n- **Platinum_Vol.** : Volume des transactions de platine.\n- **Silver_Price** : Prix de l'argent en USD par once troy.\n- **Silver_Vol.** : Volume des transactions d'argent.\n- **Gold_Price** : Prix de l'or en USD par once troy.\n- **Gold_Vol.** : Volume des transactions d'or.\n\n**Cryptomonnaies :**\n- **Bitcoin_Price** : Prix du Bitcoin en USD.\n- **Bitcoin_Vol.** : Volume des transactions de Bitcoin.\n- **Ethereum_Price** : Prix de l'Ethereum en USD.\n- **Ethereum_Vol.** : Volume des transactions de l'Ethereum.\n\n**Indices Boursiers :**\n- **S&P_500_Price** : Indice de prix du S&P 500.\n- **Nasdaq_100_Price** : Indice de prix du Nasdaq 100.\n- **Nasdaq_100_Vol.** : Volume des transactions pour l'indice Nasdaq 100.\n\n**Actions des Entreprises :**\n- **Apple_Price** : Prix de l'action Apple Inc. en USD.\n- **Apple_Vol.** : Volume des transactions de l'action Apple Inc.\n- **Tesla_Price** : Prix de l'action Tesla Inc. en USD.\n- **Tesla_Vol.** : Volume des transactions de l'action Tesla Inc.\n- **Microsoft_Price** : Prix de l'action Microsoft Corporation en USD.\n- **Microsoft_Vol.** : Volume des transactions de l'action Microsoft Corporation.\n- **Google_Price** : Prix de l'action Alphabet Inc. (Google) en USD.\n- **Google_Vol.** : Volume des transactions de l'action Alphabet Inc.\n- **Nvidia_Price** : Prix de l'action Nvidia Corporation en USD.\n- **Nvidia_Vol.** : Volume des transactions de l'action Nvidia Corporation.\n- **Berkshire_Price** : Prix de l'action Berkshire Hathaway Inc. en USD.\n- **Berkshire_Vol.** : Volume des transactions de l'action Berkshire Hathaway Inc.\n- **Netflix_Price** : Prix de l'action Netflix Inc. en USD.\n- **Netflix_Vol.** : Volume des transactions de l'action Netflix Inc.\n- **Amazon_Price** : Prix de l'action Amazon.com Inc. en USD.\n- **Amazon_Vol.** : Volume des transactions de l'action Amazon.com Inc.\n- **Meta_Price** : Prix de l'action Meta Platforms, Inc. (anciennement Facebook) en USD.\n- **Meta_Vol.** : Volume des transactions de l'action Meta Platforms, Inc.\n\nVotre rôle est d'aider les utilisateurs à interpréter et analyser ces données pour prendre des décisions éclairées en matière d'investissement et de trading. Vous devez être capable de :\n\n1. **Répondre aux questions spécifiques :** Fournir des réponses précises basées sur les données, telles que les tendances de prix, les performances des actifs, les volumes de transactions, etc.\n\n2. **Effectuer des analyses statistiques :** Calculer des moyennes, des médianes, des écarts-types, des corrélations entre différentes variables, etc.\n\n3. **Visualiser les données :** Suggérer ou générer des graphiques pertinents (comme des graphiques en ligne, des histogrammes, des nuages de points) pour illustrer les tendances et les relations dans les données.\n\n4. **Identifier les tendances et les anomalies :** Détecter les motifs récurrents, les pics inhabituels de volume ou de prix, et autres comportements atypiques des actifs.\n\n5. **Comparer les performances :** Analyser et comparer les performances de différents actifs ou secteurs sur des périodes spécifiques.\n\n6. **Fournir des recommandations :** Basé sur l'analyse des données historiques, proposer des suggestions ou des prévisions concernant les mouvements potentiels des actifs.\n\n**Directives supplémentaires :**\n\n- **Précision des données :** Assurez-vous que toutes les analyses et réponses sont basées strictement sur les données disponibles dans la base de données NocoDB.\n\n- **Clarté et concision :** Présentez les informations de manière claire, structurée et facile à comprendre, en évitant le jargon technique excessif.\n\n- **Interactivité :** Posez des questions de clarification si l'utilisateur ne fournit pas suffisamment d'informations pour répondre efficacement à sa demande.\n\n- **Confidentialité et sécurité :** Respectez la confidentialité des données et ne divulguez aucune information sensible non autorisée.\n\n**Exemples de requêtes utilisateurs :**\n\n- \"Quelle a été la performance du Bitcoin au cours de la dernière année ?\"\n- \"Montre-moi le volume des transactions de l'or en 2023.\"\n- \"Existe-t-il une corrélation entre le prix du pétrole brut et le S&P 500 ?\"\n- \"Quels secteurs ont connu la plus forte croissance en 2022 ?\"\n- \"Peux-tu prédire les tendances des prix de l'action Tesla au troisième trimestre de 2024 ?\"\n- \"Analyse la relation entre le volume des transactions de l'Ethereum et son prix.\"\n- \"Compare les performances d'Apple et de Microsoft sur les cinq dernières années.\"\n\nRépondez de manière informative et analytique, en vous appuyant sur les données disponibles pour fournir des insights pertinents et utiles.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        140,
+        0
+      ],
+      "id": "206648c8-a702-4e86-95b2-ac035e444c5e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        40,
+        240
+      ],
+      "id": "9368c1a8-f5bc-4853-a124-e2564ae83a28",
+      "name": "OpenAI Chat Model",
+      "notesInFlow": false,
+      "credentials": {
+        "openAiApi": {
+          "id": "fAk2FH61HSfpgzR8",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        220,
+        240
+      ],
+      "id": "ad39fdf0-f14e-463a-8c12-cf0c872d2a58",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "authentication": "nocoDbApiToken",
+        "operation": "getAll",
+        "workspaceId": "wnq6w65l",
+        "projectId": "pcgsf4dunjh340z",
+        "table": "mxxwo7abvcvamd2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.nocoDbTool",
+      "typeVersion": 3,
+      "position": [
+        360,
+        220
+      ],
+      "id": "02f6fda7-0487-4f0f-abbc-6ddd809c1715",
+      "name": "NocoDB",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "Bk5AYrruNrAHuFQg",
+          "name": "NocoDB Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26eeb641-cb63-46b4-9709-1f08464d45a3",
+              "name": "table_id",
+              "value": "mxxwo7abvcvamd2",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        0
+      ],
+      "id": "7578fdc2-af2c-4a9d-a6a9-4979298819db",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "=https://app.nocodb.com/api/v2/meta/tables/{{ $json.table_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "nocoDbApiToken",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -340,
+        0
+      ],
+      "id": "86cb7105-0aac-4dfc-8a49-20a70cf84aa9",
+      "name": "HTTP Request",
+      "credentials": {
+        "nocoDbApiToken": {
+          "id": "Bk5AYrruNrAHuFQg",
+          "name": "NocoDB Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b89e97c0-d4fd-425d-9a58-a99b2fcc6bfb",
+              "name": "columns",
+              "value": "={{ $json.columns.map(item => item.title).toJsonString() }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -120,
+        0
+      ],
+      "id": "634bb4c1-681d-40d8-9f0b-0b26ff190ade",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NocoDB": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cbd9576f-9e2f-4874-bc32-c8698649f825",
+  "meta": {
+    "instanceId": "af1987ed0d10730a8b41a2bd922cb242750230665289a7857ae759963b7dd4f1"
+  },
+  "id": "FJDarSNHeYjNx1Th",
+  "tags": []
+}
