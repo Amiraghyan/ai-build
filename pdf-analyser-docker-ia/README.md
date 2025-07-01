@@ -1,5 +1,7 @@
 # Analyse PDF, IA local, déployable via docker
 
+Développé par Growthsystemes Tech
+
 Analyse et résumez instantanément n’importe quel PDF en local grâce à un modèle Llama 3 open‑source exécuté par Ollama. Aucune donnée ne quitte vos serveurs : déployez l’application on‑premise ou sur votre propre cloud en un simple `docker compose up`.
 
 ---
