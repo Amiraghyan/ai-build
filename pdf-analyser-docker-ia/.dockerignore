@@ -1,0 +1,7 @@
+# Front-end artefacts
+node_modules
+dist
+
+# VCS & logs
+.git
+*.log

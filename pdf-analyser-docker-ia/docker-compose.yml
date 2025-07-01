@@ -1,0 +1,62 @@
+# docker-compose.yml
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+  # ────────────── Frontend Vite / NGINX ──────────────
+  frontend:
+    container_name: pdf-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile          # (facultatif si le nom ne change pas)
+      args:
+        # transmis au Dockerfile → ARG VITE_API_BASE_URL
+        VITE_API_BASE_URL: http://backend:8000
+    image: pdf-whisperer-frontend:latest
+    ports:
+      - "8080:80"                     # http://localhost:8080
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ────────────── Backend FastAPI ──────────────
+  backend:
+    container_name: pdf-backend
+    build:
+      context: ./backend              # Dockerfile se trouve dans backend/
+      dockerfile: Dockerfile
+    image: pdf-whisperer-backend:latest
+    environment:
+      PYTHONUNBUFFERED: "1"
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:3b
+      OLLAMA_MAX_CHARS: "15000"
+    ports:
+      - "8000:8000"                   # exposition explicite pour tests locaux
+    depends_on:
+      ollama:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # ────────────── Daemon Ollama ──────────────
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-data:/root/.ollama     # persiste les modèles téléchargés
+    ports:
+      - "11434:11434"                 # facultatif : accès API depuis l’hôte
+    restart: unless-stopped
+
+# ────────────── Volumes persistants ──────────────
+volumes:
+  ollama-data:
