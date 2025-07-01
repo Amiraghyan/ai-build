@@ -1,73 +1,141 @@
-# Welcome to your Lovable project
+# Analyse PDF, IA local, déployable via docker
 
-## Project info
+Analyse et résumez instantanément n’importe quel PDF en local grâce à un modèle Llama 3 open‑source exécuté par Ollama. Aucune donnée ne quitte vos serveurs : déployez l’application on‑premise ou sur votre propre cloud en un simple `docker compose up`.
 
-**URL**: https://lovable.dev/projects/d448fc9f-0a6b-468a-a659-e3d4a4386abd
+---
 
-## How can I edit this code?
+## Fonctionnalités
 
-There are several ways of editing your application.
+* **Drag‑and‑drop de PDF** : déposez un ou plusieurs fichiers, l’IA extrait le texte et génère un résumé ou des insights personnalisés.  
+* **Analyse multilingue** : fonctionne sur des documents français et anglais.  
+* **Modèle IA open‑source** : Llama 3 (ou tout autre modèle compatible Ollama) – aucun service SaaS propriétaire.  
+* **Déploiement 100 % conteneurisé** : frontend React/TypeScript + backend FastAPI + moteur Ollama, orchestrés par docker‑compose.  
+* **Scalabilité horizontale** : services sans état, prêts pour Kubernetes.  
+* **Conformité RGPD** : aucune dépendance externe, vos PDF restent dans votre infrastructure.
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d448fc9f-0a6b-468a-a659-e3d4a4386abd) and start prompting.
+## Architecture technique
 
-Changes made via Lovable will be committed automatically to this repo.
+```
+Frontend (React/Vite) --HTTP--> Backend (FastAPI) --REST--> Ollama (Llama 3)
+            |                                |
+         NGINX                       réseau interne
+```
 
-**Use your preferred IDE**
+* **Frontend** : React 18, Vite, TypeScript, Tailwind CSS, shadcn/ui  
+* **Backend** : Python 3.12, FastAPI, PyPDF2  
+* **IA** : Ollama + modèle Llama 3 (par défaut `llama3.2:3b`)  
+* **Conteneurs** : deux images custom (frontend, backend) + image officielle `ollama/ollama`
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Démarrage rapide
 
-Follow these steps:
+Prérequis : Docker 24+ et Docker Compose v2 installés sur la machine cible.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+# 1. Récupérer le code
+git clone https://github.com/votre-org/pdf-whisperer-ai-lab.git
+cd pdf-whisperer-ai-lab
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. (Optionnel) personnaliser les variables d'environnement
+cp .env.example .env    # voir la section Configuration
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 3. Builder et lancer
+docker compose up --build -d
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+| Service      | Port hôte               | Description        |
+|--------------|-------------------------|--------------------|
+| Frontend     | http://localhost:8080   | Interface web      |
+| Backend API  | http://localhost:8000   | Endpoints FastAPI  |
+| Ollama API   | http://localhost:11434  | Moteur de génération |
+
+Arrêter l’application :
+
+```bash
+docker compose down
+```
+
+---
+
+## Configuration
+
+Variables surchargées via `docker-compose.yml` :
+
+| Variable            | Par défaut     | Impact                                           |
+|---------------------|----------------|--------------------------------------------------|
+| `OLLAMA_MODEL`      | `llama3.2:3b`  | Modèle utilisé pour l’analyse                    |
+| `OLLAMA_MAX_CHARS`  | `15000`        | Longueur maximale de texte envoyé à l’IA         |
+| `VITE_API_BASE_URL` | `http://backend:8000` | URL de l’API pour le frontend           |
+
+Changer de modèle :
+
+```bash
+docker exec -it ollama ollama pull mistral:7b
+docker compose restart backend
+```
+
+---
+
+## Développement local sans Docker
+
+### Backend API
+
+```bash
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+### Frontend
+
+```bash
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Lancer un daemon Ollama localement (`ollama serve`) puis ajustez les URLs dans `.env`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## Tests
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+# backend
+pytest
 
-## What technologies are used for this project?
+# frontend (Vitest)
+npm run test
+```
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Déploiement en production
 
-## How can I deploy this project?
+* **Docker Swarm ou Kubernetes** : adaptez le fichier `docker-compose.yml` ou fournissez un chart Helm.  
+* **CI/CD** : exemple de pipeline GitHub Actions dans `.github/workflows/`.  
+* **Observabilité** : endpoints de healthcheck exposés pour Prometheus ou Grafana.
 
-Simply open [Lovable](https://lovable.dev/projects/d448fc9f-0a6b-468a-a659-e3d4a4386abd) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## Licence
 
-Yes, you can!
+Code sous licence MIT.  
+Les modèles IA appartiennent à leurs auteurs respectifs (consultez leurs licences).
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Contribuer
+
+Les merge requests / pull requests sont bienvenues. Ouvrez une issue ou participez aux discussions GitHub.
+
+---
+
+## Remerciements
+
+* Ollama pour l’intégration simple des modèles open‑source  
+* Meta AI pour Llama 3  
+* Les mainteneurs de FastAPI, React, Tailwind CSS et autres dépendances
