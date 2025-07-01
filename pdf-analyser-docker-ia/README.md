@@ -2,7 +2,7 @@
 
 Développé par Growthsystemes Tech
 
-Analyse et résumez instantanément n’importe quel PDF en local grâce à un modèle Llama 3 open‑source exécuté par Ollama. Aucune donnée ne quitte vos serveurs : déployez l’application on‑premise ou sur votre propre cloud en un simple `docker compose up`.
+Analysez et résumez instantanément n’importe quel PDF en local grâce à un modèle Llama 3 open‑source exécuté par Ollama. Aucune donnée ne quitte vos serveurs : déployez l’application on‑premise ou sur votre propre cloud en un simple `docker compose up`.
 
 ---
 
@@ -27,7 +27,7 @@ Frontend (React/Vite) --HTTP--> Backend (FastAPI) --REST--> Ollama (Llama 3)
 
 * **Frontend** : React 18, Vite, TypeScript, Tailwind CSS, shadcn/ui  
 * **Backend** : Python 3.12, FastAPI, PyPDF2  
-* **IA** : Ollama + modèle Llama 3 (par défaut `llama3.2:3b`)  
+* **IA** : Ollama + modèle Llama 3 (par défaut `llama3.2:3b`)  
 * **Conteneurs** : deux images custom (frontend, backend) + image officielle `ollama/ollama`
 
 ---
@@ -37,14 +37,14 @@ Frontend (React/Vite) --HTTP--> Backend (FastAPI) --REST--> Ollama (Llama 3)
 Prérequis : Docker 24+ et Docker Compose v2 installés sur la machine cible.
 
 ```bash
-# 1. Récupérer le code
-git clone https://github.com/votre-org/pdf-whisperer-ai-lab.git
-cd pdf-whisperer-ai-lab
+# 1. Cloner le dépôt
+git clone https://github.com/Quentin-aq/ai-build.git
+cd ai-build/pdf-analyser-docker-ia
 
-# 2. (Optionnel) personnaliser les variables d'environnement
+# 2. (Optionnel) personnaliser les variables d'environnement
 cp .env.example .env    # voir la section Configuration
 
-# 3. Builder et lancer
+# 3. Builder et lancer les services
 docker compose up --build -d
 ```
 
@@ -118,7 +118,7 @@ npm run test
 ## Déploiement en production
 
 * **Docker Swarm ou Kubernetes** : adaptez le fichier `docker-compose.yml` ou fournissez un chart Helm.  
-* **CI/CD** : exemple de pipeline GitHub Actions dans `.github/workflows/`.  
+* **CI/CD** : exemple de pipeline GitHub Actions dans `.github/workflows/`.  
 * **Observabilité** : endpoints de healthcheck exposés pour Prometheus ou Grafana.
 
 ---
@@ -139,5 +139,5 @@ Les merge requests / pull requests sont bienvenues. Ouvrez une issue ou particip
 ## Remerciements
 
 * Ollama pour l’intégration simple des modèles open‑source  
-* Meta AI pour Llama 3  
+* Meta AI pour Llama 3  
 * Les mainteneurs de FastAPI, React, Tailwind CSS et autres dépendances
