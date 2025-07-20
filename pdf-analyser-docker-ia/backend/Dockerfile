@@ -25,12 +25,12 @@ COPY . .
 
 # ───── variables par défaut (écrasables par compose/K8s) ─────
 ENV OLLAMA_HOST=http://ollama:11434 \
-    OLLAMA_MODEL=llama3.2:3b \
+    OLLAMA_MODEL=llama3:8b \
     OLLAMA_MAX_CHARS=15000
 
 # ───── réseau & supervision ─────
 EXPOSE 8000
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --retries=5 --start-period=60s \
   CMD wget -qO- http://localhost:8000/ || exit 1
 
 # ───── lancement ─────
