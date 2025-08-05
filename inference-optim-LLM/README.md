@@ -1,4 +1,4 @@
-# 🚀 Inference-Optim-LLM
+# Inference-Optim-LLM
 
 > **Banc d'essai reproductible pour mesurer les gains de performance GPU dans l'inférence LLM**
 > 
@@ -10,6 +10,19 @@ Développé par Quentin Gavila et l'équipe de Growthsystemes
 [![NVIDIA](https://img.shields.io/badge/NVIDIA-GPU%20Optimized-green?logo=nvidia)](https://nvidia.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)](https://python.org)
 
+## Table des matières
+- [Résultats de performance concrets](#résultats-de-performance-concrets)
+- [Pourquoi ce projet ?](#pourquoi-ce-projet-)
+- [Démarrage rapide](#démarrage-rapide)
+- [Architecture & fonctionnement](#architecture--fonctionnement)
+- [Types de tests & optimisations](#types-de-tests--optimisations)
+- [Commandes avancées](#commandes-avancées)
+- [Analyse des métriques](#analyse-des-métriques)
+- [Recommandations d'optimisation](#recommandations-doptimisation)
+- [Configuration & variables](#configuration--variables)
+- [Évolutions futures](#évolutions-futures)
+- [Support & ressources](#support--ressources)
+- [Licence & attribution](#licence--attribution)
 ---
 
 ## **Résultats de Performance Concrets**
