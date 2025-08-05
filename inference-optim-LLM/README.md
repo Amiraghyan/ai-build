@@ -48,10 +48,10 @@ Développé par Quentin Gavila et l'équipe de Growthsystemes
 ## **Pourquoi ce Projet ?**
 
 ### **Objectifs**
-- **📈 Mesurer l'impact réel** des optimisations GPU sur différents types de workload
-- **⚡ Identifier les configurations optimales** (longueur prompt, batch size, modèle)
-- **🔧 Fournir un environnement reproductible** avec Docker et métriques précises
-- **📚 Servir de base pédagogique** pour comprendre l'optimisation d'inférence LLM
+- **Mesurer l'impact réel** des optimisations GPU sur différents types de workload
+- **Identifier les configurations optimales** (longueur prompt, batch size, modèle)
+- **Fournir un environnement reproductible** avec Docker et métriques précises
+- **Servir de base pédagogique** pour comprendre l'optimisation d'inférence LLM
 
 ### **Cas d'Usage**
 - **Évaluation de performance** avant déploiement production
