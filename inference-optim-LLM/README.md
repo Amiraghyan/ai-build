@@ -12,9 +12,9 @@ Développé par Quentin Gavila et l'équipe de Growthsystemes
 
 ---
 
-## 📊 **Résultats de Performance Concrets**
+## **Résultats de Performance Concrets**
 
-### **🎯 Gains Mesurés sur RTX 4070**
+### **Gains Mesurés sur RTX 4070**
 
 | **Configuration** | **TPS Moyen** | **Latence** | **Memory GPU** | **Power GPU** | **🚀 Speedup** |
 |-------------------|---------------|-------------|----------------|---------------|----------------|
@@ -23,7 +23,7 @@ Développé par Quentin Gavila et l'équipe de Growthsystemes
 | **GPU Moyens (200T)** | 81 TPS | 2.4s | 882 MB | 17W | **12x** |
 | **🔥 GPU Batch x4 (200T)** | **101 TPS** | **1.8s** | **882 MB** | **18W** | **🏆 15x** |
 
-### **💡 Découvertes Clés**
+### **Découvertes Clés**
 
 - ✅ **Longueur des prompts cruciale** : +16% de performance avec des prompts de 200 tokens vs 64 tokens
 - ✅ **Batch processing = game changer** : +47% de TPS avec batch size 4
@@ -32,7 +32,7 @@ Développé par Quentin Gavila et l'équipe de Growthsystemes
 
 ---
 
-## 🎯 **Pourquoi ce Projet ?**
+## **Pourquoi ce Projet ?**
 
 ### **Objectifs**
 - **📈 Mesurer l'impact réel** des optimisations GPU sur différents types de workload
@@ -48,9 +48,9 @@ Développé par Quentin Gavila et l'équipe de Growthsystemes
 
 ---
 
-## 🚀 **Démarrage Rapide**
+## **Démarrage Rapide**
 
-### **🐳 Avec Docker (Recommandé)**
+### **Avec Docker (Recommandé)**
 
 ```bash
 # 1. Cloner le projet
@@ -65,7 +65,7 @@ ls reports/
 # baseline.jsonl  trtllm.jsonl
 ```
 
-### **🧪 Tests de Performance Spécifiques**
+### **Tests de Performance Spécifiques**
 
 ```bash
 # Test baseline simple
@@ -87,29 +87,29 @@ docker-compose run --rm baseline run baseline \
 
 ---
 
-## 🏗️ **Architecture & Fonctionnement**
+## **Architecture & Fonctionnement**
 
-### **🔧 Composants Principaux**
+### **Composants Principaux**
 
 ```
 inference-optim-LLM/
-├── 🎯 inference_optim_llm/
+├── inference_optim_llm/
 │   ├── engines/          # Runners (HFRunner, TRTRunner)
 │   ├── core/metrics.py   # Collecte métriques GPU (NVML)
 │   ├── build/builder.py  # Conversion TensorRT-LLM
 │   └── cli.py           # Interface unifiée
-├── 🐳 docker/
+├── docker/
 │   ├── Dockerfile.baseline  # Image PyTorch baseline
 │   ├── Dockerfile.trtllm    # Image TensorRT-LLM
 │   └── docker-compose.yml   # Orchestration services
-├── 📊 data/
+├── data/
 │   ├── prompts.txt         # Prompts courts (test rapide)
 │   ├── prompts_medium.txt  # Prompts optimisés (200T)
 │   └── prompts_long.txt    # Prompts avancés (500T)
-└── 📈 reports/            # Résultats JSONL + analyses
+└── reports/            # Résultats JSONL + analyses
 ```
 
-### **⚙️ Système de Fallback Intelligent**
+### **Système de Fallback Intelligent**
 
 Le projet inclut un **système de fallback robuste** :
 
@@ -120,9 +120,9 @@ Le projet inclut un **système de fallback robuste** :
 
 ---
 
-## 📊 **Types de Tests & Optimisations**
+## **Types de Tests & Optimisations**
 
-### **1. 📏 Impact de la Longueur des Prompts**
+### **1. Impact de la Longueur des Prompts**
 
 | **Type** | **Tokens** | **TPS Moyen** | **Efficacité** | **Cas d'Usage** |
 |----------|------------|---------------|----------------|-----------------|
@@ -130,7 +130,7 @@ Le projet inclut un **système de fallback robuste** :
 | **Moyens** | 200 | 81 TPS | **+16%** | Production standard |
 | **Longs** | 500 | - | **+25%** | Génération avancée |
 
-### **2. 🔄 Impact du Batch Processing**
+### **2. Impact du Batch Processing**
 
 | **Batch Size** | **TPS Moyen** | **Latence** | **Recommandation** |
 |----------------|---------------|-------------|-------------------|
@@ -138,7 +138,7 @@ Le projet inclut un **système de fallback robuste** :
 | **4** | **101 TPS** | **1.8s** | **🏆 Optimal** |
 | **8+** | - | - | Modèles plus gros |
 
-### **3. ⚡ Optimisations Énergétiques**
+### **3. Optimisations Énergétiques**
 
 - **🔋 Consommation réduite** : 30W → 18W avec configuration optimale
 - **🧠 Mémoire optimisée** : 1513MB → 882MB avec workload cohérent
@@ -146,9 +146,9 @@ Le projet inclut un **système de fallback robuste** :
 
 ---
 
-## 🛠️ **Commandes Avancées**
+## **Commandes Avancées**
 
-### **📋 Interface CLI Complète**
+### **Interface CLI Complète**
 
 ```bash
 # Commandes de base
@@ -162,7 +162,7 @@ python -m inference_optim_llm.cli run trtllm --batch-size 4 --max-new-tokens 200
 python -m inference_optim_llm.cli build --model-id gpt2 --precision fp16
 ```
 
-### **🐳 Docker Compose Profiles**
+### **Docker Compose Profiles**
 
 ```bash
 # Profile baseline uniquement
@@ -193,7 +193,7 @@ reports/
 └── benchmark_results.md # Rapport d'analyse automatique
 ```
 
-### **🔍 Structure des Métriques**
+### **Structure des Métriques**
 
 ```json
 {
@@ -208,9 +208,9 @@ reports/
 
 ---
 
-## 🎯 **Recommandations d'Optimisation**
+## **Recommandations d'Optimisation**
 
-### **🏆 Configuration Optimale**
+### **Configuration Optimale**
 
 ```bash
 # Pour les meilleurs gains de performance
@@ -221,7 +221,7 @@ docker-compose run --rm baseline run baseline \
   --save-json reports/optimal.jsonl
 ```
 
-### **💡 Bonnes Pratiques**
+### **Bonnes Pratiques**
 
 - ✅ **Utilisez des prompts de 15-20 mots minimum** pour de meilleurs gains
 - ✅ **Générez 200+ tokens** pour amortir l'overhead
@@ -229,7 +229,7 @@ docker-compose run --rm baseline run baseline \
 - ✅ **Monitoring continu** des métriques GPU (mémoire, puissance)
 - ✅ **Tests A/B** entre configurations pour votre use case
 
-### **⚠️ À Éviter**
+### **⚠À Éviter**
 
 - ❌ Prompts très courts (< 5 mots) : overhead dominant
 - ❌ Génération très courte (< 64 tokens) : inefficace
@@ -238,9 +238,9 @@ docker-compose run --rm baseline run baseline \
 
 ---
 
-## 🔧 **Configuration & Variables**
+## **Configuration & Variables**
 
-### **📋 Variables d'Environnement**
+### ** Variables d'Environnement**
 
 ```bash
 # .env
@@ -262,7 +262,7 @@ CUDA_VISIBLE_DEVICES=0           # GPU à utiliser
 
 ---
 
-## 🚀 **Évolutions Futures**
+## **Évolutions Futures**
 
 ### **🔮 Prochaines Fonctionnalités**
 
@@ -281,7 +281,7 @@ CUDA_VISIBLE_DEVICES=0           # GPU à utiliser
 
 ---
 
-## 📞 **Support & Ressources**
+## **Support & Ressources**
 
 ### **🔗 Liens Utiles**
 
@@ -289,11 +289,11 @@ CUDA_VISIBLE_DEVICES=0           # GPU à utiliser
 - [Guide optimisation GPU](https://docs.nvidia.com/deeplearning/performance/)
 - [PyTorch Performance Tuning](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
 
-### **💬 Support**
+### **Support**
 
-- 🐛 **Issues** : Reportez les bugs via GitHub Issues
-- 💡 **Discussions** : Partagez vos résultats et optimisations
-- 📧 **Contact** : Pour support enterprise ou collaborations
+- **Issues** : Reportez les bugs via GitHub Issues
+- **Discussions** : Partagez vos résultats et optimisations
+- **Contact** : communauté IA de growthsystemes : https://www.skool.com/ai-builder-2894/about
 
 ---
 
