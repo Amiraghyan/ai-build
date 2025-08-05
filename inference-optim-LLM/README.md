@@ -67,8 +67,8 @@ Développé par Quentin Gavila et l'équipe de Growthsystemes
 
 ```bash
 # 1. Cloner le projet
-git clone <repo-url>
-cd inference-optim-LLM
+git clone https://github.com/Quentin-aq/ai-build.git
+cd ai-build/inference-optim-LLM
 
 # 2. Lancer le benchmark complet
 docker-compose --profile bench up
