@@ -1,0 +1,161 @@
+{
+  "name": "Agent IA Prédiction Fraudes Bancaires",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Peux tu regarder si il y a eu des fraudes bancaires",
+        "options": {
+          "systemMessage": "=Vous êtes un agent intelligent spécialisé dans l'analyse des fraudes bancaires. Vous avez un accès direct à une feuille Google Sheets contenant des prédictions de fraudes. Chaque prédiction est représentée par une liste [1, 1] pour les transactions potentiellement frauduleuses et [0, 0] pour les transactions non frauduleuses.\n\nVotre rôle est de :\n\nAnalyser les données contenues dans la colonne \"predictions\" de la feuille Google Sheets.\nCompter le nombre total de prédictions [1, 1].\nRépondre à l'utilisateur avec une réponse claire et concise comme :\nS'il y a des fraudes : \"Il y a eu [X] fraudes bancaires potentielles détectées.\"\nS'il n'y a pas de fraudes : \"Aucune fraude bancaire potentielle n'a été détectée.\"\nAssurez-vous que votre réponse est précise et facile à comprendre. Si des erreurs surviennent, mentionnez-les clairement"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        120,
+        -140
+      ],
+      "id": "e5a46677-cf7a-4f95-8bb6-327cf1ba5ba7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        80,
+        160
+      ],
+      "id": "43220a6c-79bb-47dc-a7b0-a60919331e8c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "fAk2FH61HSfpgzR8",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns",
+          "mode": "list",
+          "cachedResultName": "Carte Bancaire Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1863347950,
+          "mode": "list",
+          "cachedResultName": "Feuille 2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8rFo9Rc0Kt1SE6o0e0_JEuDl0ELstOzddymIW_8xns/edit#gid=1863347950"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        340,
+        140
+      ],
+      "id": "36b77374-3e30-4dfd-a47f-fb7415c279a7",
+      "name": "prediction_fraudes_bancaires",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DJE7lgcevvk6xeMF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "testing",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        -140
+      ],
+      "id": "c2ea02cd-fe83-4311-9b45-215f84a3a261",
+      "name": "Webhook",
+      "webhookId": "a125aa06-3bdf-49d6-a45c-ca6c3faafaef"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        540,
+        -140
+      ],
+      "id": "81139155-7da2-413c-9ccd-4789c326cbc0",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prediction_fraudes_bancaires": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "83d0563d-e712-473f-8ff5-c8078bad9039",
+  "meta": {
+    "instanceId": "af1987ed0d10730a8b41a2bd922cb242750230665289a7857ae759963b7dd4f1"
+  },
+  "id": "h3umWQ3DGkc3tAop",
+  "tags": []
+}
