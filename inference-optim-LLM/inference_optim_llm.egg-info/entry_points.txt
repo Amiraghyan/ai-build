@@ -1,0 +1,2 @@
+[console_scripts]
+iol = inference_optim_llm.cli:app
