@@ -1,0 +1,118 @@
+Metadata-Version: 2.4
+Name: inference-optim-llm
+Version: 0.1.0
+Summary: Optimisation d'inférence LLM avec comparaison baseline vs TensorRT-LLM
+Author-email: Inference Optim Team <team@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/example/inference-optim-llm
+Project-URL: Repository, https://github.com/example/inference-optim-llm
+Project-URL: Documentation, https://github.com/example/inference-optim-llm/docs
+Project-URL: Bug Reports, https://github.com/example/inference-optim-llm/issues
+Keywords: llm,inference,tensorrt,optimization,benchmark
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: torch>=2.0.0
+Requires-Dist: transformers>=4.39.0
+Requires-Dist: huggingface-hub>=0.16.0
+Requires-Dist: typer>=0.9.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: sentencepiece>=0.1.99
+Requires-Dist: accelerate>=0.20.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.10.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: types-requests; extra == "dev"
+Provides-Extra: gpu
+Requires-Dist: pynvml>=11.0.0; extra == "gpu"
+Provides-Extra: rich
+Requires-Dist: rich>=13.0.0; extra == "rich"
+Provides-Extra: viz
+Requires-Dist: matplotlib>=3.5.0; extra == "viz"
+Provides-Extra: all
+Requires-Dist: inference-optim-llm[dev,gpu,rich,viz]; extra == "all"
+
+# inference‑optim‑LLM
+
+> Banc d’essai reproductible pour comparer l’inférence « baseline » (PyTorch + Hugging Face Transformers) à l’inférence optimisée **NVIDIA TensorRT‑LLM**.
+
+---
+
+## Pourquoi ce dépôt ?
+
+- **Mesurer l’impact réel** des optimisations GPU (kernel fusion, paged‑attention, quantization INT8/FP16…) sur la latence et le débit d’un même LLM.  
+- **Réduire le temps de mise en place** : un unique `docker compose` pour lancer baseline *et* TensorRT‑LLM.  
+- **Centraliser les métriques** (latence, tokens / s, mémoire, puissance) et produire des rapports prêts à publier.  
+- **Servir de base didactique** à une vidéo, un article ou une veille technique.
+
+---
+
+## Fonctionnalités principales
+
+- **Code Python modulaire** : chaque backend est encapsulé dans un runner (`HFRunner`, `TRTRunner`). Ajouter TGI ou vLLM prend <100 lignes.  
+- **Conteneurs prêts à l’emploi** : deux images (`baseline`, `trtllm`) orchestrées par `docker‑compose.yml`.  
+- **Collecte de métriques exhaustive** : JSONL par prompt ➜ agrégation p50/p95 ➜ rapports CSV / Markdown.  
+- **CLI unifiée `iol`** :  
+  ```bash
+  iol download   # récupère le modèle Hugging Face
+  iol build      # convertit & compile l’engine TensorRT‑LLM
+  iol run        # exécute baseline ou trtllm
+  iol bench      # benchmark complet (baseline + trtllm + fusion résultats)
+
+- Documentation MkDocs : architecture, méthodologie, pistes d’extension (batching dynamique, speculative decoding, Triton, Prometheus…).
+- CI/CD GPU‑ready : tests unitaires sur CPU + smoke‑bench GPU sur GitHub Actions.
+
+# Mise en route rapide
+
+git clone https://github.com/<org>/inference-optim-LLM.git
+cd inference-optim-LLM
+
+cp .env.example .env      # renseigner HF_TOKEN et, si besoin, MODEL_ID
+docker compose build baseline trtllm
+
+# 1) exécuter la variante « baseline »
+docker compose run baseline
+
+# 2) exécuter la variante TensorRT‑LLM
+docker compose run trtllm
+
+# 3) fusionner et résumer les métriques
+python scripts/benchmark.py
+
+# Aperçu de l’architecture
+inference_optim_llm/
+├── engines/          # Runners baseline & TensorRT‑LLM
+├── core/metrics.py   # Agrégation p50/p95, export JSONL
+├── utils/timing.py   # Context‑managers chrono (sync & async)
+├── build/            # Conversion HF → TRT‑LLM, compilation .engine
+└── cli.py            # Commandes iol download | build | run | bench
+
+docker/               # Images baseline / trtllm + docker‑compose.yml
+scripts/              # Exécutables download, run, benchmark, export
+notebooks/            # Exploration Jupyter
+docs/                 # MkDocs (architecture, optimisation, résultats)
+
+Points forts techniques
+- Modularité : même interface pour tous les backends ➜ comparaisons rigoureuses.
+- Batching configurable : taille fixe appliquée aux deux variantes pour un test équitable.
+- Mesures GPU optionnelles : si pynvml n’est pas présent, la collecte continue avec NaN (latence & débit restent exploitables).
+- Documentation embarquée : chaque module est entièrement commenté ; MkDocs génère un site statique (thème Material).
+
+Prochaines extensions possibles
+- Batching dynamique : intégrer Hugging Face TGI pour comparer un serveur de production.
+- Speculative decoding : ajouter un runner « draft + target » pour réduire la latence.
+- Triton Inference Server : déployer l’engine TensorRT‑LLM en multi‑GPU.
+- Prometheus / Grafana : exposer /metrics et suivre les perfs en continu.
