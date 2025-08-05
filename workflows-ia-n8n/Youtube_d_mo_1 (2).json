@@ -1,0 +1,396 @@
+{
+  "name": "Youtube démo 1",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "#1 Envoyer un Email\n\n- connecter tes emails.\n- paramètrer le noued.",
+        "height": 220,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -580,
+        -120
+      ],
+      "id": "a6193fe5-c3eb-4ee7-9caa-7cd4ec85f1a6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "quentingavila@gmail.com",
+        "subject": "Test - Youtube 1",
+        "emailType": "text",
+        "message": "=Salut Quentin,\n\nMerci d'avoir remplis le formulaire,\n\nNotre équipe te recontacte d'ici 24 pour la suite des événements.\n\nBenoit",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        -60
+      ],
+      "id": "3d1adaf9-d4c7-41b8-a205-421f5471b097",
+      "name": "Gmail",
+      "webhookId": "92bc5c35-679c-42af-8b91-aa09fad42d2b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lSG6NQpaXEmOyMIR",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "#1 Calendly -> CRM \n",
+        "height": 220,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -580,
+        300
+      ],
+      "id": "5a788e5f-dba7-41dc-939f-1cd4e4a95d04",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appmddOq44KBtgnVd",
+          "mode": "list",
+          "cachedResultName": "Démo Youtube",
+          "cachedResultUrl": "https://airtable.com/appmddOq44KBtgnVd"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbltiRBRkvilYN1fI",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appmddOq44KBtgnVd/tbltiRBRkvilYN1fI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email": "={{ $json.payload.scheduled_event.event_memberships[0].user_email }}",
+            "Nom": "={{ $json.payload.scheduled_event.event_memberships[0].user_name }}",
+            "Contexte": "={{ $json.payload.questions_and_answers[0].answer }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nom",
+              "displayName": "Nom",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contexte",
+              "displayName": "Contexte",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        360
+      ],
+      "id": "d22e18e5-2c20-4df6-9f84-39250b37da2b",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "bnOzaEmBrdTTreMh",
+          "name": "Airtable - GS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "#3 Agent IA\n\n",
+        "height": 220,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -580,
+        720
+      ],
+      "id": "d3755d20-65e1-4c20-9040-95b5d9b44103",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "formTitle": "Linkedin Post Generator",
+        "formDescription": "Permet de générer des post linkedin engageant avec l'IA",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Mots Clés",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        720
+      ],
+      "id": "2c5c9d13-5606-4b66-b9e3-1bc5e3b0cee9",
+      "name": "On form submission",
+      "webhookId": "79504235-7951-43c2-a306-879caa68e581"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Vous êtes un agent IA spécialisé dans la rédaction de posts LinkedIn engageants et professionnels à partir des mots clés :  {{ $json[\"Mots Clés\"] }}",
+        "options": {
+          "systemMessage": "=1. RÔLE DE L’AGENT\nVous êtes un agent IA spécialisé dans la rédaction de posts LinkedIn engageants et professionnels. \n\nVotre objectif est de transformer les mots clés fournies : {{ $json['Mots Clés'] }} en un texte clair, pertinent et incitatif qui respecte le ton et l’image de marque du client (qui travail dans l'IA)\n\n2. INSTRUCTIONS\nPréface : Agir comme un copywriter B2B expérimenté, capable d’adapter le niveau de langage (de convivial à corporate) en fonction des informations d’entrée.\n\nÉtapes, dans l’ordre exact :\n1. Lire les données entrantes (title, idées clés, audience cible, éventuel lien ou visuel).\n2. Établir un angle/hook accrocheur en ≤ 120 caractères.\n3. Rédiger le corps principal (2-3 courts paragraphes, phrases ≤ 25 mots).\n4. Ajouter un appel à l’action (CTA) clair et une question ouverte pour encourager les commentaires.\n5. Vérifier : orthographe, grammaire, inclusion de mots-clés, longueur totale ≤ 1 200 caractères.\n6. Fournir la sortie structurée décrite à l’étape 4.\n\n3. RÈGLES\n- Aucune information confidentielle ou personnelle ne doit être révélée.\n- Pas d’allégations non vérifiées ; citer la source ou rester factuel.\n- Proscrire le bourrage de mots-clés ; priorité à la lisibilité.\n- Interdire toute formulation discriminatoire, haineuse ou offensante.\n- Garder un ton positif ; éviter la critique gratuite de concurrents.\n- Ne jamais insérer d’émojis, hashtags en excès (max 3), ni majuscules intégrales.\n- Si un champ essentiel est manquant, renvoyer l’erreur : `ERROR_MISSING_INPUT:<nom_du_champ>`.\n\n4. EXEMPLES\n\n### Exemple d’entrée (JSON simulé)\n```json\n{\n  \"title\": \"Comment l’IA bouleverse le marketing B2B\",\n  \"keyPoints\": [\n    \"Personnalisation à grande échelle\",\n    \"Réduction du coût d’acquisition\",\n    \"Nouveaux indicateurs de performance\"\n  ],\n  \"audience\": \"Directeurs marketing de PME\",\n  \"cta\": \"Envie d’échanger sur vos défis ?\"\n}",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        160,
+        720
+      ],
+      "id": "ed1f0d1a-51c0-4ea6-944b-4706800be71f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        120,
+        940
+      ],
+      "id": "05af97c5-cc5c-4ad0-b91d-de0f9dd021d7",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "VctR6MKe30dqeYws",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('On form submission').item.json.submittedAt }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        260,
+        960
+      ],
+      "id": "e8ce9075-1810-4196-a621-7cc3c566e9e5",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appmddOq44KBtgnVd",
+          "mode": "list",
+          "cachedResultName": "Démo Youtube",
+          "cachedResultUrl": "https://airtable.com/appmddOq44KBtgnVd"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbltiRBRkvilYN1fI",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appmddOq44KBtgnVd/tbltiRBRkvilYN1fI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Validé": false,
+            "Post Linkedin": "={{ $json.output }}",
+            "Mots Clés": "={{ $('On form submission').item.json[\"Mots Clés\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Mots Clés",
+              "displayName": "Mots Clés",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Post Linkedin",
+              "displayName": "Post Linkedin",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Validé",
+              "displayName": "Validé",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Users",
+              "displayName": "Users",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        520,
+        720
+      ],
+      "id": "084eae8a-c8a0-4071-84bc-b0512190f948",
+      "name": "Airtable1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "bnOzaEmBrdTTreMh",
+          "name": "Airtable - GS"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "Mots Clés": "Agents IA, RAG",
+          "submittedAt": "2025-04-30T10:16:05.977+04:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Airtable1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8f1471f9-32a1-46cb-a6cd-fece51df016d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "af1987ed0d10730a8b41a2bd922cb242750230665289a7857ae759963b7dd4f1"
+  },
+  "id": "wtaceKSdVNrK2iYc",
+  "tags": [
+    {
+      "createdAt": "2025-04-29T07:31:13.022Z",
+      "updatedAt": "2025-04-29T07:31:13.022Z",
+      "id": "gN9filuuXU91v2Ml",
+      "name": "youtube"
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "name": "Machine Learning",
+  "nodes": [
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Tu es un assistant spécialisé dans l’analyse de biens immobiliers pour estimer les prix selon un modèle de régression linéaire. \nDans notre modèle, tu dois récupérer précisément les 5 variables suivantes :\n1. Avg. Area Income\n2. Avg. Area House Age\n3. Avg. Area Number of Rooms\n4. Avg. Area Number of Bedrooms\n5. Area Population\n\n**Objectif** :\nExtraire ces 5 variables depuis les informations communiquées par l’utilisateur, puis produire un **unique** output de type JSON, strictement conforme à la structure :\n\n{\n  \"features\": [\n    \"Avg. Area Income\",\n    \"Avg. Area House Age\",\n    \"Avg. Area Number of Rooms\",\n    \"Avg. Area Number of Bedrooms\",\n    \"Area Population\"\n  ]\n}\n\n**Contraintes** :\n- N’inclus aucune explication ni texte supplémentaire en dehors de ce JSON.\n- Utilise exactement l’ordre indiqué (Income, House Age, Number of Rooms, Number of Bedrooms, Population).\n- Respecte le format JSON strict.\n\nNe génère aucune réponse autre que ce JSON final.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        400,
+        -200
+      ],
+      "id": "c4c62bfb-2fee-47f3-b100-8284d1d84851",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        300,
+        80
+      ],
+      "id": "cc4e420b-c00b-45ce-8a7f-1ea846bb7cf7",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "HvLr5CQzwhqbTV6R",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        80
+      ],
+      "id": "f0f2b917-711f-453a-9d9e-5069d7927662",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.1.202:5000/predict",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"features\": [{{ $json.output.features[0] }}, {{ $json.output.features[1] }}, {{ $json.output.features[2] }}, {{ $json.output.features[3] }}, {{ $json.output.features[4] }}]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        -200
+      ],
+      "id": "38fca4f6-3905-44d6-be2f-2777aac9c561",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"features\": [\n    85000,\n    12,\n    8,\n    4,\n    45000\n  ]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        80
+      ],
+      "id": "8fd8e110-825b-4292-ad17-19122c0ed90b",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        120,
+        -200
+      ],
+      "id": "f937ebb0-690b-4bcb-a3ee-b283ef74cf0a",
+      "name": "When chat message received",
+      "webhookId": "ebd1df1d-1122-4e73-b07c-3b8515efbe7e"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prediction[0] }}",
+        "options": {
+          "systemMessage": "=Tu prends en input un nombre qui est la prédiction du prix d'un bien immobilier, et tu formule une phrase avec ce prix, en donnant l'output suivant : \"La prédiction de votre bien immobilier est de  {{ $json.prediction[0] }} $\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1040,
+        -200
+      ],
+      "id": "825320ab-4b1f-4a55-b06d-5d9c77f75303",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        40
+      ],
+      "id": "79748f98-ac26-42af-a4cd-38832d39941c",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "HvLr5CQzwhqbTV6R",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6fef7d8e-fadd-40a6-b538-813777034055",
+  "meta": {
+    "instanceId": "7edbff1c91e3470abe2e8788e62079aa99f63f31ba499a0fe52deaad85911a2e"
+  },
+  "id": "SJZYTB0pcQwWDD7k",
+  "tags": []
+}
