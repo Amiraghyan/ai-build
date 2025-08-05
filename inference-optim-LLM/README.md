@@ -4,6 +4,8 @@
 > 
 > Comparaison rigoureuse entre **PyTorch baseline** et **TensorRT-LLM optimisé** avec métriques détaillées.
 
+# développer par Quentin Gavila et l'équipe de Growthsystemes
+
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://docker.com)
 [![NVIDIA](https://img.shields.io/badge/NVIDIA-GPU%20Optimized-green?logo=nvidia)](https://nvidia.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)](https://python.org)
